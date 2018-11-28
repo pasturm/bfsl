@@ -1,6 +1,6 @@
 Package: bfsl
 Title: Best-fit Straight Line
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: The bfsl package provides the best-fit straight line of bivariate 
   data with (possibly correlated) errors in both coordinates.

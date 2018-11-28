@@ -43,8 +43,10 @@ and \code{r}.}
 problem of fitting a straight line to independent data with (possibly
 correlated) normally distributed errors in \code{x} and \code{y}. Setting
 \code{sd_x = sd_y} and \code{r = 0} leads to the orthogonal distance
-regression (ODR) solution. Setting \code{sd_x = var(x)}, \code{sd_y = var(y)}
-and \code{r = 0} leads to the geometric mean regression (GMR) solution.
+regression (ODR) solution, also known as major axis regression. Setting
+\code{sd_x = var(x)}, \code{sd_y = var(y)} and \code{r = 0} leads to the
+geometric mean regression (GMR) solution, also known as reduced major axis
+regression or standardised major axis regression.
 
 With \code{sd_x = 0} the (weigthed) ordinary least squares (OLS) solution is
 obtained. The calculated standard errors of the slope and intercept multiplied
@@ -62,6 +64,9 @@ measurement errors have been overestimated.
 }
 \examples{
 bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+
+fit = bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+plot(fit)
 
 }
 \references{

@@ -1,33 +1,66 @@
-# R package bfst: Best-fit Straight Line
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+R package bfst: Best-fit Straight Line
+======================================
+
 [![Travis build status](https://travis-ci.org/pasturm/bfsl.svg?branch=master)](https://travis-ci.org/pasturm/bfsl)
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 
-The solution for the best-fit straight line to independent points with normally distributed errors in both _x_ and _y_ is known from York (1966, 1969, 2004). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the _x_ and _y_ errors are correlated.
+The solution for the best-fit straight line to independent points with normally distributed errors in both *x* and *y* is known from York (1966, 1969, 2004). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the *x* and *y* errors are correlated.
 
-Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many statisticians and other scientists that are writing on straight-line fitting with errors in both _x_ and _y_ (also known as Model II regressions, errors-in-variables models or measurement error models).
+Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many statisticians and other scientists that are writing on straight-line fitting with errors in both *x* and *y* (also known as Model II regressions, errors-in-variables models or measurement error models).
 
 Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also known as major axis regression), and geometric mean regression (also known as reduced major axis or standardised major axis regression), are all special cases of York’s solution and only valid under particular measurement conditions.
 
 The bfsl package implements York's general solution and provides the best-fit straight line of bivariate data with errors in both coordinates.
 
-### Installation
-```
+Installation
+------------
+
+``` r
 if (!require("devtools")) { install.packages("devtools") }
 devtools::install_github("pasturm/bfsl")
 ```
 
-### Release notes
+Example
+-------
+
+``` r
+library(bfsl)
+bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+#> Best-fit straight line
+#> 
+#>            Estimate  Std. Error
+#> Intercept   5.47561   0.29277  
+#> Slope      -0.47941   0.05761  
+#> 
+#> Goodness of fit:
+#> 1.508
+```
+
+``` r
+fit = bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+plot(fit)
+ols = bfsl(pearson$x, pearson$y)
+abline(coef = ols$coef[,1], lty = 2)
+legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
+```
+
+<img src="man/figures/README-plot-1.png" width="75%" />
+
+Release notes
+-------------
+
 See the [NEWS file](https://github.com/pasturm/bfsl/blob/master/NEWS.md) for latest release notes.
 
-### References
+References
+----------
 
-York, D. (1966). Least-squares fitting of a straight line. _Canadian Journal of Physics_, 44(5), 1079–1086, https://doi.org/10.1139/p66-090
+York, D. (1966). Least-squares fitting of a straight line. *Canadian Journal of Physics*, 44(5), 1079–1086, <https://doi.org/10.1139/p66-090>
 
-York, D. (1969). Least squares fitting of a straight line with correlated errors. _Earth and Planetary Science Letters_, 5, 320–324,
-https://doi.org/10.1016/S0012-821X(68)80059-7
+York, D. (1969). Least squares fitting of a straight line with correlated errors. *Earth and Planetary Science Letters*, 5, 320–324, <https://doi.org/10.1016/S0012-821X(68)80059-7>
 
-York D. and N.M. Evensen (2004). Unified equations for the slope, intercept, and 
-standard errors of the best straight line, _American Journal of Physics_, 72, 367-375, https://doi.org/10.1119/1.1632486
+York D. and N.M. Evensen (2004). Unified equations for the slope, intercept, and standard errors of the best straight line, *American Journal of Physics*, 72, 367-375, <https://doi.org/10.1119/1.1632486>
 
-Wehr, R. and Saleska, S. R. (2017) The long-solved problem of the best-fit straight line: application to isotopic mixing lines, _Biogeosciences_, 14, 17-29, https://doi.org/10.5194/bg-14-17-2017
+Wehr, R. and Saleska, S. R. (2017) The long-solved problem of the best-fit straight line: application to isotopic mixing lines, *Biogeosciences*, 14, 17-29, <https://doi.org/10.5194/bg-14-17-2017>
