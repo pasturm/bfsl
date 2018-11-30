@@ -36,6 +36,10 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #' Setting \code{sd_x = sd_y = 1} and \code{r = 0} leads to the orthogonal
 #' distance regression solution, also known as major axis regression.
 #'
+#' The more general Deming regression solution is obtained with setting
+#' \code{sd_y_i/sd_x_i} to the same value for all data points and with
+#' \code{r = 0}.
+#'
 #' Setting \code{sd_x = sd(x)}, \code{sd_y = sd(y)} and \code{r = 0} leads to
 #' the geometric mean regression solution, also known as reduced major
 #' axis regression or standardised major axis regression.
@@ -86,15 +90,16 @@ bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0,
                 control = bfsl.control()) {
 
   # check arguments
-  stopifnot(is.numeric(x), is.numeric(y))
+  stopifnot(is.numeric(x), is.numeric(y), is.numeric(sd_x), is.numeric(sd_y),
+            is.numeric(r))
   if (!is.vector(x) || !is.vector(y) || length(x) != length(y))
     stop("Arguments 'x' and 'y' must be numeric vectors of equal length.")
   n = length(x)
-  if (!is.null(sd_x) && (!is.vector(sd_x) || (length(sd_x) != n && length(sd_x) != 1)))
+  if (!is.vector(sd_x) || (length(sd_x) != n && length(sd_x) != 1))
     stop("Argument 'sd_x' must be a vector the same length as 'x' or of length 1.")
-  if (!is.null(sd_y) && (!is.vector(sd_y) || (length(sd_y) != n && length(sd_y) != 1)))
+  if (!is.vector(sd_y) || (length(sd_y) != n && length(sd_y) != 1))
     stop("Argument 'sd_y' must be a vector the same length as 'y' or of length 1.")
-  if (!is.null(r) && (!is.vector(r) || (length(r) != n && length(r) != 1)))
+  if (!is.vector(r) || (length(r) != n && length(r) != 1))
     stop("Argument 'r' must be a vector the same length as 'x' or of length 1.")
 
   # record the function call

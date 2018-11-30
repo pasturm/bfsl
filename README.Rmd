@@ -21,7 +21,7 @@ The solution for the best-fit straight line to independent points with normally 
 
 Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many statisticians and other scientists that are writing on straight-line fitting with errors in both _x_ and _y_ (also known as Model II regressions, errors-in-variables models or measurement error models).
 
-Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also known as major axis regression), and geometric mean regression (also known as reduced major axis or standardised major axis regression), are all special cases of York’s solution and only valid under particular measurement conditions.
+Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also known as major axis regression), geometric mean regression (also known as reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
 
 The bfsl package implements York's general solution and provides the best-fit straight line of bivariate data with errors in both coordinates.
 
