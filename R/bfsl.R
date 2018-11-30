@@ -27,16 +27,18 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #'
 #' \code{bfsl} provides the general least-squares estimation solution to the
 #' problem of fitting a straight line to independent data with (possibly
-#' correlated) normally distributed errors in \code{x} and \code{y}. Setting
-#' \code{sd_x = sd_y} and \code{r = 0} leads to the orthogonal distance
-#' regression (ODR) solution, also known as major axis regression. Setting
-#' \code{sd_x = var(x)}, \code{sd_y = var(y)} and \code{r = 0} leads to the
-#' geometric mean regression (GMR) solution, also known as reduced major axis
-#' regression or standardised major axis regression.
+#' correlated) normally distributed errors in \code{x} and \code{y}.
 #'
-#' With \code{sd_x = 0} the (weigthed) ordinary least squares (OLS) solution is
+#' With \code{sd_x = 0} the (weigthed) ordinary least squares solution is
 #' obtained. The calculated standard errors of the slope and intercept multiplied
-#' with \code{sqrt(chisq)} gives the OLS standard errors.
+#' with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
+#'
+#' Setting \code{sd_x = sd_y = 1} and \code{r = 0} leads to the orthogonal
+#' distance regression solution, also known as major axis regression.
+#'
+#' Setting \code{sd_x = sd(x)}, \code{sd_y = sd(y)} and \code{r = 0} leads to
+#' the geometric mean regression solution, also known as reduced major
+#' axis regression or standardised major axis regression.
 #'
 #' The goodness of fit metric \code{chisq} is a weighted reduced chi-squared
 #' statistic. It compares the deviations of the points from the fit line to the
