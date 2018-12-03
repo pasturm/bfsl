@@ -33,12 +33,10 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #' obtained. The calculated standard errors of the slope and intercept multiplied
 #' with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
 #'
-#' Setting \code{sd_x = sd_y = 1} and \code{r = 0} leads to the orthogonal
-#' distance regression solution, also known as major axis regression.
-#'
-#' The more general Deming regression solution is obtained with setting
-#' \code{sd_y_i/sd_x_i} to the same value for all data points and with
-#' \code{r = 0}.
+#' With \code{sd_x = c}, \code{sd_x = d} and \code{r = 0}, where \code{c} and
+#' \code{d} are positive numbers, the Deming regression solution is obtained.
+#' If additionally \code{c = d}, the orthogonal distance regression solution,
+#' also known as major axis regression, is obtained.
 #'
 #' Setting \code{sd_x = sd(x)}, \code{sd_y = sd(y)} and \code{r = 0} leads to
 #' the geometric mean regression solution, also known as reduced major
@@ -56,12 +54,15 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #'
 #' @param x A vector of \emph{x} observations.
 #' @param y A vector of \emph{y} observations.
-#' @param sd_x An optional vector or scalar of \emph{x} measurement error
-#' standard deviation(s).
-#' @param sd_y An optional vector or scalar of \emph{y} measurement error
-#' standard deviation(s).
-#' @param r An optional vector or scalar of correlation coefficient(s) between
-#' errors in \emph{x} and \emph{y}.
+#' @param sd_x An optional vector of \emph{x} measurement error standard
+#' deviations. If it is of length one, all data points are assumed to have the
+#' same \emph{x} standard deviation.
+#' @param sd_y An optional vector of \emph{y} measurement error standard
+#' deviations. If it is of length one, all data points are assumed to have the
+#' same \emph{y} standard deviation.
+#' @param r An optional vector of correlation coefficients between errors in
+#' \emph{x} and \emph{y}. If it is of length one, all data points are assumed to
+#' have the same correlation coefficient.
 #' @param control An optional list of control settings. See \code{\link{bfsl.control}}
 #' for the names of the settable control values and their effect.
 #'
@@ -80,14 +81,17 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #' https://doi.org/10.1016/S0012-821X(68)80059-7
 #'
 #' @examples
-#' bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+#' x = pearson_york$x
+#' y = pearson_york$y
+#' sd_x = 1/sqrt(pearson_york$w_x)
+#' sd_y = 1/sqrt(pearson_york$w_y)
+#' bfsl(x, y, sd_x, sd_y)
 #'
-#' fit = bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+#' fit = bfsl(x, y, sd_x, sd_y)
 #' plot(fit)
 #'
 #' @export
-bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0,
-                control = bfsl.control()) {
+bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
 
   # check arguments
   stopifnot(is.numeric(x), is.numeric(y), is.numeric(sd_x), is.numeric(sd_y),

@@ -9,9 +9,9 @@ R package bfst: Best-fit Straight Line
 
 The solution for the best-fit straight line to independent points with normally distributed errors in both *x* and *y* is known from York (1966, 1969, 2004). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the *x* and *y* errors are correlated.
 
-Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many statisticians and other scientists that are writing on straight-line fitting with errors in both *x* and *y* (also known as Model II regressions, errors-in-variables models or measurement error models).
+Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many scientists that are writing on straight-line fitting with errors in both *x* and *y* (also known as Model II regressions, errors-in-variables models or measurement error models).
 
-Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also known as major axis regression), geometric mean regression (also known as reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
+Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also called major axis regression), geometric mean regression (also called reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
 
 The bfsl package implements York's general solution and provides the best-fit straight line of bivariate data with errors in both coordinates.
 
@@ -28,21 +28,25 @@ Example
 
 ``` r
 library(bfsl)
-bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+x = pearson_york$x
+y = pearson_york$y
+sd_x = 1/sqrt(pearson_york$w_x)
+sd_y = 1/sqrt(pearson_york$w_y)
+bfsl(x, y, sd_x, sd_y)
 #> Best-fit straight line
 #> 
 #>            Estimate  Std. Error
-#> Intercept   5.47561   0.29277  
-#> Slope      -0.47941   0.05761  
+#> Intercept   5.47991   0.29497  
+#> Slope      -0.48053   0.05799  
 #> 
 #> Goodness of fit:
-#> 1.508
+#> 1.483
 ```
 
 ``` r
-fit = bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+fit = bfsl(x, y, sd_x, sd_y)
 plot(fit)
-ols = bfsl(pearson$x, pearson$y)
+ols = bfsl(x, y)
 abline(coef = ols$coef[,1], lty = 2)
 legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
 ```
@@ -61,6 +65,6 @@ York, D. (1966). Least-squares fitting of a straight line. *Canadian Journal of 
 
 York, D. (1969). Least squares fitting of a straight line with correlated errors. *Earth and Planetary Science Letters*, 5, 320–324, <https://doi.org/10.1016/S0012-821X(68)80059-7>
 
-York D. and N.M. Evensen (2004). Unified equations for the slope, intercept, and standard errors of the best straight line, *American Journal of Physics*, 72, 367-375, <https://doi.org/10.1119/1.1632486>
+York D. et al. (2004). Unified equations for the slope, intercept, and standard errors of the best straight line, *American Journal of Physics*, 72, 367-375, <https://doi.org/10.1119/1.1632486>
 
 Wehr, R. and Saleska, S. R. (2017) The long-solved problem of the best-fit straight line: application to isotopic mixing lines, *Biogeosciences*, 14, 17-29, <https://doi.org/10.5194/bg-14-17-2017>

@@ -1,15 +1,15 @@
-#' Sample data.
+#' Example data.
 #'
-#' Dataset from Pearson (1901) with weights from York (1966).
+#' Example data set of Pearson (1901) with weights suggested by York (1966).
 #'
 #' @docType data
 #'
 #' @format A data frame with 10 rows and 4 variables:
 #' \describe{
 #'   \item{x}{\emph{x} observations}
-#'   \item{sd_x}{\emph{x} measurement error standard deviations}
+#'   \item{w_x}{weights of \emph{x}}
 #'   \item{y}{\emph{y} observations}
-#'   \item{sd_y}{\emph{y} measurement error standard deviations}
+#'   \item{w_y}{weights of \emph{y}}
 #' }
 #'
 #' @references Pearson K. (1901), On lines and planes of closest fit to systems
@@ -20,4 +20,4 @@
 #' \emph{Canadian Journal of Physics}, 44(5), 1079–1086,
 #' https://doi.org/10.1139/p66-090
 #'
-"pearson"
+"pearson_york"

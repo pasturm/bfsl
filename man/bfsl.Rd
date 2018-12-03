@@ -11,14 +11,17 @@ bfsl(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control())
 
 \item{y}{A vector of \emph{y} observations.}
 
-\item{sd_x}{An optional vector or scalar of \emph{x} measurement error
-standard deviation(s).}
+\item{sd_x}{An optional vector of \emph{x} measurement error standard
+deviations. If it is of length one, all data points are assumed to have the
+same \emph{x} standard deviation.}
 
-\item{sd_y}{An optional vector or scalar of \emph{y} measurement error
-standard deviation(s).}
+\item{sd_y}{An optional vector of \emph{y} measurement error standard
+deviations. If it is of length one, all data points are assumed to have the
+same \emph{y} standard deviation.}
 
-\item{r}{An optional vector or scalar of correlation coefficient(s) between
-errors in \emph{x} and \emph{y}.}
+\item{r}{An optional vector of correlation coefficients between errors in
+\emph{x} and \emph{y}. If it is of length one, all data points are assumed to
+have the same correlation coefficient.}
 
 \item{control}{An optional list of control settings. See \code{\link{bfsl.control}}
 for the names of the settable control values and their effect.}
@@ -47,8 +50,10 @@ With \code{sd_x = 0} the (weigthed) ordinary least squares solution is
 obtained. The calculated standard errors of the slope and intercept multiplied
 with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
 
-Setting \code{sd_x = sd_y = 1} and \code{r = 0} leads to the orthogonal
-distance regression solution, also known as major axis regression.
+With \code{sd_x = c}, \code{sd_x = d} and \code{r = 0}, where \code{c} and
+\code{d} are positive numbers, the Deming regression solution is obtained.
+If additionally \code{c = d}, the orthogonal distance regression solution,
+also known as major axis regression, is obtained.
 
 Setting \code{sd_x = sd(x)}, \code{sd_y = sd(y)} and \code{r = 0} leads to
 the geometric mean regression solution, also known as reduced major
@@ -65,9 +70,13 @@ indicates overfitting: either the model is improperly fitting noise, or the
 measurement errors have been overestimated.
 }
 \examples{
-bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+x = pearson_york$x
+y = pearson_york$y
+sd_x = 1/sqrt(pearson_york$w_x)
+sd_y = 1/sqrt(pearson_york$w_y)
+bfsl(x, y, sd_x, sd_y)
 
-fit = bfsl(pearson$x, pearson$y, pearson$sd_x, pearson$sd_y)
+fit = bfsl(x, y, sd_x, sd_y)
 plot(fit)
 
 }
