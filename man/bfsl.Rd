@@ -2,52 +2,36 @@
 % Please edit documentation in R/bfsl.R
 \name{bfsl}
 \alias{bfsl}
-\alias{bfsl.default}
-\alias{bfsl.data.frame}
-\alias{bfsl.formula}
 \title{Calculates the best-fit straight line.}
 \usage{
-bfsl(...)
-
-\method{bfsl}{default}(x, y, sd_x = 0, sd_y = 1, r = 0,
-  control = bfsl_control(), ...)
-
-\method{bfsl}{data.frame}(data, control = bfsl_control(), ...)
-
-\method{bfsl}{formula}(formula, data = parent.frame(), sd_x = 0, sd_y = 1,
-  r = 0, control = bfsl_control(), ...)
+bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control())
 }
 \arguments{
-\item{...}{Additional arguments.}
-
-\item{x}{A vector of \emph{x} observations.}
+\item{x}{A vector of \emph{x} observations or a data frame (or an
+object coercible by \code{\link{as.data.frame}} to a data frame) containing
+the named vectors \emph{x}, \emph{y}, and optionally \emph{sd_x},
+\emph{sd_y} and \emph{r}. If weights \emph{w_x} and \emph{w_y} are given,
+then \emph{sd_x} and \emph{sd_y} are calculated from \emph{sd_x = 1/sqrt(w_x)}
+and \emph{sd_y = 1/sqrt(w_y)}. Specifying \code{y}, \code{sd_x}, \code{sd_y}
+or \code{r} directly as function arguments overwrites these variables in the
+data structure.}
 
 \item{y}{A vector of \emph{y} observations.}
 
-\item{sd_x}{An optional vector of \emph{x} measurement error standard
+\item{sd_x}{A vector of \emph{x} measurement error standard
 deviations. If it is of length one, all data points are assumed to have the
 same \emph{x} standard deviation.}
 
-\item{sd_y}{An optional vector of \emph{y} measurement error standard
+\item{sd_y}{A vector of \emph{y} measurement error standard
 deviations. If it is of length one, all data points are assumed to have the
 same \emph{y} standard deviation.}
 
-\item{r}{An optional vector of correlation coefficients between errors in
+\item{r}{A vector of correlation coefficients between errors in
 \emph{x} and \emph{y}. If it is of length one, all data points are assumed to
 have the same correlation coefficient.}
 
-\item{control}{An optional list of control settings. See \code{\link{bfsl_control}}
+\item{control}{A list of control settings. See \code{\link{bfsl_control}}
 for the names of the settable control values and their effect.}
-
-\item{data}{A data frame or list containing the variables \code{x}, \code{y},
-and optionally \code{sd_x}, \code{sd_y} and \code{r}. If the weights \code{w_x}
-and \code{w_y} are given, then \code{sd_x} and \code{sd_y} are calculated from
-\code{sd_x = 1/sqrt(w_x)} and \code{sd_y = 1/sqrt(w_y)}. \code{sd_x},
-\code{sd_y} or \code{r} from \code{data} can be overwritten by specifying
-these variables as additional function arguments.}
-
-\item{formula}{A formula specifying the bivariate model (as in \code{\link{lm}},
-but here only \code{y ~ x} or \code{x ~ y} makes sense).}
 }
 \value{
 An object of class "\code{bfsl}", which is a \code{list} containing
@@ -70,7 +54,7 @@ and \code{r}.}
 problem of fitting a straight line to independent data with (possibly
 correlated) normally distributed errors in \code{x} and \code{y}.
 
-With \code{sd_x = 0} the (weigthed) ordinary least squares solution is
+With \code{sd_x = 0} the (weighted) ordinary least squares solution is
 obtained. The calculated standard errors of the slope and intercept multiplied
 with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
 

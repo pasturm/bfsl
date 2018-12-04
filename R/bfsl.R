@@ -27,7 +27,7 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' problem of fitting a straight line to independent data with (possibly
 #' correlated) normally distributed errors in \code{x} and \code{y}.
 #'
-#' With \code{sd_x = 0} the (weigthed) ordinary least squares solution is
+#' With \code{sd_x = 0} the (weighted) ordinary least squares solution is
 #' obtained. The calculated standard errors of the slope and intercept multiplied
 #' with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
 #'
@@ -50,20 +50,26 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' indicates overfitting: either the model is improperly fitting noise, or the
 #' measurement errors have been overestimated.
 #'
-#' @param x A vector of \emph{x} observations.
+#' @param x A vector of \emph{x} observations or a data frame (or an
+#' object coercible by \code{\link{as.data.frame}} to a data frame) containing
+#' the named vectors \emph{x}, \emph{y}, and optionally \emph{sd_x},
+#' \emph{sd_y} and \emph{r}. If weights \emph{w_x} and \emph{w_y} are given,
+#' then \emph{sd_x} and \emph{sd_y} are calculated from \emph{sd_x = 1/sqrt(w_x)}
+#' and \emph{sd_y = 1/sqrt(w_y)}. Specifying \code{y}, \code{sd_x}, \code{sd_y}
+#' or \code{r} directly as function arguments overwrites these variables in the
+#' data structure.
 #' @param y A vector of \emph{y} observations.
-#' @param sd_x An optional vector of \emph{x} measurement error standard
+#' @param sd_x A vector of \emph{x} measurement error standard
 #' deviations. If it is of length one, all data points are assumed to have the
 #' same \emph{x} standard deviation.
-#' @param sd_y An optional vector of \emph{y} measurement error standard
+#' @param sd_y A vector of \emph{y} measurement error standard
 #' deviations. If it is of length one, all data points are assumed to have the
 #' same \emph{y} standard deviation.
-#' @param r An optional vector of correlation coefficients between errors in
+#' @param r A vector of correlation coefficients between errors in
 #' \emph{x} and \emph{y}. If it is of length one, all data points are assumed to
 #' have the same correlation coefficient.
-#' @param control An optional list of control settings. See \code{\link{bfsl_control}}
+#' @param control A list of control settings. See \code{\link{bfsl_control}}
 #' for the names of the settable control values and their effect.
-#' @param ... Additional arguments.
 #'
 #' @return An object of class "\code{bfsl}", which is a \code{list} containing
 #' the following components:
@@ -91,146 +97,64 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' plot(fit)
 #'
 #' @export
-bfsl <- function(...) { UseMethod("bfsl") }
+bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()) {
 
-
-#' @rdname bfsl
-#' @export
-#'
-bfsl.default = function(x, y, sd_x = 0, sd_y = 1, r = 0,
-                        control = bfsl_control(), ...) {
-
-  if (is.list(x)) {
-    return(bfsl.data.frame(x, control))
-  }
-  cl = match.call()
-
-  ctrl = bfsl_control()
-  if(!missing(control)) {
-    control = as.list(control)
-    ctrl[names(control)] = control
-  }
-
-  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
-
-  return(out)
-}
-
-
-#' @param data A data frame or list containing the variables \code{x}, \code{y},
-#' and optionally \code{sd_x}, \code{sd_y} and \code{r}. If the weights \code{w_x}
-#' and \code{w_y} are given, then \code{sd_x} and \code{sd_y} are calculated from
-#' \code{sd_x = 1/sqrt(w_x)} and \code{sd_y = 1/sqrt(w_y)}. \code{sd_x},
-#' \code{sd_y} or \code{r} from \code{data} can be overwritten by specifying
-#' these variables as additional function arguments.
-#'
-#' @rdname bfsl
-#' @export
-bfsl.data.frame = function(data, control = bfsl_control(), ...) {
-
-  # extract the variables from data
-  if (exists("x", data)) {
-    x = data$x
-  } else {
-    stop("x variable is missing in data.")
-  }
-  if (exists("y", data)) {
-    y = data$y
-  } else {
-    stop("y variable is missing in data.")
-  }
-  if (exists("sd_x", data)) {
-    sd_x = data$sd_x
-  } else {
-    sd_x = 0
-  }
-  if (exists("sd_y", data)) {
-    sd_y = data$sd_y
-  } else {
-    sd_y = 1
-  }
-  if (exists("w_x", data)) {
-    sd_x = 1/sqrt(data$w_x)
-  }
-  if (exists("w_y", data)) {
-    sd_y = 1/sqrt(data$w_y)
-  }
-  if (exists("r", data)) {
-    r = data$r
-  } else {
-    r = 0
-  }
-
-  # overwrite sd_x or sd_y if they are given as a function argument
-  arg = list(...)
-  if (exists("sd_x", arg)) {
-    sd_x = arg$sd_x
-  }
-  if (exists("sd_y", arg)) {
-    sd_y = arg$sd_y
-  }
-  if (exists("r", arg)) {
-    r = arg$r
+  # dispatch variables if first argument is a data frame, list, etc.
+  if (!is.vector(x) || is.list(x)) {
+    df = as.data.frame(x)
+    if (exists("x", df)) {
+      x = df$x
+    } else {
+      stop("x variable is missing in data structure.")
+    }
+    if (missing("y") && exists("y", df)) {
+      y = df$y
+    }
+    if (missing("sd_x") && exists("sd_x", df)) {
+      sd_x = df$sd_x
+    }
+    if (missing("sd_y") && exists("sd_y", df)) {
+      sd_y = df$sd_y
+    }
+    if (missing("sd_x") && exists("w_x", df)) {
+      sd_x = 1/sqrt(df$w_x)
+    }
+    if (missing("sd_y") && exists("w_y", df)) {
+      sd_y = 1/sqrt(df$w_y)
+    }
+    if (missing("r") && exists("r", df)) {
+      r = df$r
+    }
   }
 
   # record the function call
   cl = match.call()
 
+  # iterations control
   ctrl = bfsl_control()
   if(!missing(control)) {
     control = as.list(control)
     ctrl[names(control)] = control
   }
-
-  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
-
-  return(out)
-}
-
-
-#' @param formula A formula specifying the bivariate model (as in \code{\link{lm}},
-#' but here only \code{y ~ x} or \code{x ~ y} makes sense).
-#' @rdname bfsl
-#' @export
-#'
-bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 0,
-                        control = bfsl_control(), ...) {
-
-  cl = match.call()
-  mf = match.call(expand.dots = FALSE)
-  m = match(c("formula", "data", "sd_x", "sd_y", "r"), names(mf), 0)
-  mf = mf[c(1, m)]
-  mf$drop.unused.levels = TRUE
-  mf[[1]] = as.name("model.frame")
-  mf = eval(mf, parent.frame())
-  y = mf[,1]
-  x = mf[,2]
-
-  ctrl = bfsl_control()
-  if(!missing(control)) {
-    control = as.list(control)
-    ctrl[names(control)] = control
-  }
-
-  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
-
-  return(out)
-}
-
-bfsl_fit = function(x, y, sd_x, sd_y, r, control, cl) {
 
   # check arguments
-  stopifnot(is.numeric(x), is.numeric(y), is.numeric(sd_x), is.numeric(sd_y),
-            is.numeric(r))
-  if (!is.vector(x) || !is.vector(y) || length(x) != length(y))
+  if (is.null(y)) { stop("Argument 'y' is missing.") }
+  if (!is.numeric(x) || !is.numeric(y) || !is.vector(x) || !is.vector(y) ||
+      length(x) != length(y)) {
     stop("Arguments 'x' and 'y' must be numeric vectors of equal length.")
+  }
   n = length(x)
-  if (!is.vector(sd_x) || (length(sd_x) != n && length(sd_x) != 1))
-    stop("Argument 'sd_x' must be a vector the same length as 'x' or of length 1.")
-  if (!is.vector(sd_y) || (length(sd_y) != n && length(sd_y) != 1))
-    stop("Argument 'sd_y' must be a vector the same length as 'y' or of length 1.")
-  if (!is.vector(r) || (length(r) != n && length(r) != 1))
-    stop("Argument 'r' must be a vector the same length as 'x' or of length 1.")
+  if (!is.numeric(sd_x) || !is.vector(sd_x) || (length(sd_x) != n &&
+                                                length(sd_x) != 1)) {
+    stop("Argument 'sd_x' must be a numeric vector the same length as 'x' or of length 1.")
+  }
+  if (!is.numeric(sd_y) || !is.vector(sd_y) || (length(sd_y) != n &&
+                                                length(sd_y) != 1)) {
+    stop("Argument 'sd_y' must be a numeric vector the same length as 'y' or of length 1.")
+  }
+  if (!is.numeric(r) || !is.vector(r) || (length(r) != n && length(r) != 1)) {
+    stop("Argument 'r' must be a numeric vector the same length as 'x' or of length 1.")
+  }
 
   # ordinary least squares for initial guess value of slope
   x0 = as.matrix(cbind(1,x))
