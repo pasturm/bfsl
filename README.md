@@ -7,7 +7,7 @@ R package bfst: Best-fit Straight Line
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 
-The solution for the best-fit straight line to independent points with normally distributed errors in both *x* and *y* is known from York (1966, 1969, 2004). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the *x* and *y* errors are correlated.
+The solution for the best-fit straight line to independent points with normally distributed errors in both *x* and *y* is known from York (1966, 1968, 2004). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the *x* and *y* errors are correlated.
 
 Surprisingly, as Wehr and Saleska (2017) point out, York's solution has escaped the attention of many scientists that are writing on straight-line fitting with errors in both *x* and *y* (also known as Model II regressions, errors-in-variables models or measurement error models).
 
@@ -59,7 +59,7 @@ References
 
 York, D. (1966). Least-squares fitting of a straight line. *Canadian Journal of Physics*, 44(5), 1079–1086, <https://doi.org/10.1139/p66-090>
 
-York, D. (1969). Least squares fitting of a straight line with correlated errors. *Earth and Planetary Science Letters*, 5, 320–324, <https://doi.org/10.1016/S0012-821X(68)80059-7>
+York, D. (1968). Least squares fitting of a straight line with correlated errors. *Earth and Planetary Science Letters*, 5, 320–324, <https://doi.org/10.1016/S0012-821X(68)80059-7>
 
 York D. et al. (2004). Unified equations for the slope, intercept, and standard errors of the best straight line, *American Journal of Physics*, 72, 367-375, <https://doi.org/10.1119/1.1632486>
 

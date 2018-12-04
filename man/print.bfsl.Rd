@@ -2,7 +2,7 @@
 % Please edit documentation in R/bfsl.R
 \name{print.bfsl}
 \alias{print.bfsl}
-\title{Print method for bfsl results}
+\title{Print Method for bfsl Results}
 \usage{
 \method{print}{bfsl}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }

@@ -1,3 +1,4 @@
+^tools$
 ^README\.Rmd$
 ^\.travis\.yml$
 ^bfsl\.Rproj$

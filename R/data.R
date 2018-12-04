@@ -1,4 +1,4 @@
-#' Example data.
+#' Example data
 #'
 #' Example data set of Pearson (1901) with weights suggested by York (1966).
 #'
@@ -19,5 +19,8 @@
 #' @references York, D. (1966). Least-squares fitting of a straight line.
 #' \emph{Canadian Journal of Physics}, 44(5), 1079–1086,
 #' https://doi.org/10.1139/p66-090
+#'
+#' @examples
+#' bfsl(pearson_york)
 #'
 "pearson_york"

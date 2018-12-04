@@ -1,4 +1,4 @@
-#' Controls the iterations in bfsl.
+#' Controls the Iterations in the bfsl Algorithm
 #'
 #' \code{bfsl_control} allows the user to set some characteristics of the \code{bfsl}
 #' best-fit straight line algorithm.
@@ -18,21 +18,22 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
   list(tol = tol, maxit = maxit)
 }
 
-#' Calculates the best-fit straight line.
+#' Calculates the Best-fit Straight Line
 #'
 #' \code{bfsl} calculates the best-fit straight line to independent points with
 #' (possibly correlated) normally distributed errors in both coordinates.
 #'
 #' \code{bfsl} provides the general least-squares estimation solution to the
 #' problem of fitting a straight line to independent data with (possibly
-#' correlated) normally distributed errors in \code{x} and \code{y}.
+#' correlated) normally distributed errors in both \code{x} and \code{y}.
 #'
 #' With \code{sd_x = 0} the (weighted) ordinary least squares solution is
-#' obtained. The calculated standard errors of the slope and intercept multiplied
-#' with \code{sqrt(chisq)} gives the ordinary least squares standard errors.
+#' obtained. The calculated standard errors of the slope and intercept
+#' multiplied with \code{sqrt(chisq)} correspond to the ordinary least squares
+#' standard errors.
 #'
-#' With \code{sd_x = c}, \code{sd_x = d} and \code{r = 0}, where \code{c} and
-#' \code{d} are positive numbers, the Deming regression solution is obtained.
+#' With \code{sd_x = c}, \code{sd_y = d}, where \code{c} and \code{d} are
+#' positive numbers, and \code{r = 0} the Deming regression solution is obtained.
 #' If additionally \code{c = d}, the orthogonal distance regression solution,
 #' also known as major axis regression, is obtained.
 #'
@@ -75,14 +76,14 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' the following components:
 #' \item{coefficients}{A \code{2x2} matrix with columns of the fitted coefficients
 #' (intercept and slope) and their standard errors.}
-#' \item{chisq}{The goodness of fit.}
+#' \item{chisq}{The goodness of fit  (see Details).}
 #' \item{control}{The control \code{list} used, see the \code{control} argument.}
 #' \item{convInfo}{A \code{list} with convergence information.}
 #' \item{call}{The matched call.}
-#' \item{data}{A list containing \code{x}, \code{y}, \code{sd_x}, \code{sd_y}
+#' \item{data}{A \code{list} containing \code{x}, \code{y}, \code{sd_x}, \code{sd_y}
 #' and \code{r}.}
 #'
-#' @references York, D. (1969). Least squares fitting of a straight line with
+#' @references York, D. (1968). Least squares fitting of a straight line with
 #' correlated errors. \emph{Earth and Planetary Science Letters}, 5, 320–324,
 #' https://doi.org/10.1016/S0012-821X(68)80059-7
 #'
@@ -160,7 +161,7 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
   x0 = as.matrix(cbind(1,x))
   b = (solve(t(x0) %*% x0) %*% t(x0) %*% y)[2]
 
-  # expand sd_x and sd_y if they are scalar
+  # expand sd_x and sd_y if they are of length 1
   if (length(sd_x) == 1) {
     sd_x = rep(sd_x, n)
   }
@@ -218,7 +219,7 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
 }
 
 
-#' Print method for bfsl results
+#' Print Method for bfsl Results
 #'
 #' \code{print} method for class "\code{bfsl}".
 #'
@@ -240,7 +241,7 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
   invisible(x)
 }
 
-#' Plot method for bfsl results
+#' Plot Method for bfsl Results
 #'
 #' Plot method for objects of class "\code{bfsl}".
 #'

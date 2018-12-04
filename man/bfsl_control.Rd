@@ -2,7 +2,7 @@
 % Please edit documentation in R/bfsl.R
 \name{bfsl_control}
 \alias{bfsl_control}
-\title{Controls the iterations in bfsl.}
+\title{Controls the Iterations in the bfsl Algorithm}
 \usage{
 bfsl_control(tol = 1e-10, maxit = 100)
 }

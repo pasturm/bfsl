@@ -2,7 +2,7 @@
 % Please edit documentation in R/bfsl.R
 \name{plot.bfsl}
 \alias{plot.bfsl}
-\title{Plot method for bfsl results}
+\title{Plot Method for bfsl Results}
 \usage{
 \method{plot}{bfsl}(x, grid = TRUE, ...)
 }

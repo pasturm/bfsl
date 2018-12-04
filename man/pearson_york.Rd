@@ -3,7 +3,7 @@
 \docType{data}
 \name{pearson_york}
 \alias{pearson_york}
-\title{Example data.}
+\title{Example data}
 \format{A data frame with 10 rows and 4 variables:
 \describe{
   \item{x}{\emph{x} observations}
@@ -16,6 +16,10 @@ pearson_york
 }
 \description{
 Example data set of Pearson (1901) with weights suggested by York (1966).
+}
+\examples{
+bfsl(pearson_york)
+
 }
 \references{
 Pearson K. (1901), On lines and planes of closest fit to systems
