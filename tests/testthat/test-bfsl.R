@@ -1,6 +1,6 @@
 context("test-bfsl")
 
-test_that("bfsl works with pearson sample data", {
+test_that("bfsl works with pearso_york sample data", {
   x = pearson_york$x
   y = pearson_york$y
   sd_x = 1/sqrt(pearson_york$w_x)
@@ -49,3 +49,16 @@ test_that("bfsl gives Deming regression solution", {
   expect_equal(fit$coefficients[2,1], b_deming)
 })
 
+test_that("all bfsl methods give the same result", {
+  x = pearson_york$x
+  y = pearson_york$y
+  sd_x = 1/sqrt(pearson_york$w_x)
+  sd_y = 1/sqrt(pearson_york$w_y)
+  fit1 = bfsl(x, y, sd_x, sd_y)
+  fit2 = bfsl(pearson_york)
+  fit3 = bfsl(y ~ x, pearson_york, sd_x, sd_y)
+  fit4 = bfsl(list(x = x, y = y, sd_x = sd_x, sd_y = sd_y))
+  expect_equal(fit2$coefficients[1,1], fit1$coefficients[1,1])
+  expect_equal(fit3$coefficients[1,1], fit1$coefficients[1,1])
+  expect_equal(fit4$coefficients[1,1], fit1$coefficients[1,1])
+})

@@ -28,11 +28,17 @@ Example
 
 ``` r
 library(bfsl)
-x = pearson_york$x
-y = pearson_york$y
-sd_x = 1/sqrt(pearson_york$w_x)
-sd_y = 1/sqrt(pearson_york$w_y)
-bfsl(x, y, sd_x, sd_y)
+fit = bfsl(pearson_york)
+plot(fit)
+ols = bfsl(pearson_york, sd_x = 0, sd_y = 1)
+abline(coef = ols$coef[,1], lty = 2)
+legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
+```
+
+<img src="man/figures/README-plot-1.png" width="75%" />
+
+``` r
+bfsl(pearson_york)
 #> Best-fit straight line
 #> 
 #>            Estimate  Std. Error
@@ -42,16 +48,6 @@ bfsl(x, y, sd_x, sd_y)
 #> Goodness of fit:
 #> 1.483
 ```
-
-``` r
-fit = bfsl(x, y, sd_x, sd_y)
-plot(fit)
-ols = bfsl(x, y)
-abline(coef = ols$coef[,1], lty = 2)
-legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
-```
-
-<img src="man/figures/README-plot-1.png" width="75%" />
 
 Release notes
 -------------

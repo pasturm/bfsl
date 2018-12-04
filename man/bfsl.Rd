@@ -2,11 +2,24 @@
 % Please edit documentation in R/bfsl.R
 \name{bfsl}
 \alias{bfsl}
+\alias{bfsl.default}
+\alias{bfsl.data.frame}
+\alias{bfsl.formula}
 \title{Calculates the best-fit straight line.}
 \usage{
-bfsl(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control())
+bfsl(...)
+
+\method{bfsl}{default}(x, y, sd_x = 0, sd_y = 1, r = 0,
+  control = bfsl_control(), ...)
+
+\method{bfsl}{data.frame}(data, control = bfsl_control(), ...)
+
+\method{bfsl}{formula}(formula, data = parent.frame(), sd_x = 0, sd_y = 1,
+  r = 0, control = bfsl_control(), ...)
 }
 \arguments{
+\item{...}{Additional arguments.}
+
 \item{x}{A vector of \emph{x} observations.}
 
 \item{y}{A vector of \emph{y} observations.}
@@ -23,11 +36,22 @@ same \emph{y} standard deviation.}
 \emph{x} and \emph{y}. If it is of length one, all data points are assumed to
 have the same correlation coefficient.}
 
-\item{control}{An optional list of control settings. See \code{\link{bfsl.control}}
+\item{control}{An optional list of control settings. See \code{\link{bfsl_control}}
 for the names of the settable control values and their effect.}
+
+\item{data}{A data frame or list containing the variables \code{x}, \code{y},
+and optionally \code{sd_x}, \code{sd_y} and \code{r}. If the weights \code{w_x}
+and \code{w_y} are given, then \code{sd_x} and \code{sd_y} are calculated from
+\code{sd_x = 1/sqrt(w_x)} and \code{sd_y = 1/sqrt(w_y)}. \code{sd_x},
+\code{sd_y} or \code{r} from \code{data} can be overwritten by specifying
+these variables as additional function arguments.}
+
+\item{formula}{A formula specifying the bivariate model (as in \code{\link{lm}},
+but here only \code{y ~ x} or \code{x ~ y} makes sense).}
 }
 \value{
-A \code{list} with the components:
+An object of class "\code{bfsl}", which is a \code{list} containing
+the following components:
 \item{coefficients}{A \code{2x2} matrix with columns of the fitted coefficients
 (intercept and slope) and their standard errors.}
 \item{chisq}{The goodness of fit.}
@@ -76,7 +100,7 @@ sd_x = 1/sqrt(pearson_york$w_x)
 sd_y = 1/sqrt(pearson_york$w_y)
 bfsl(x, y, sd_x, sd_y)
 
-fit = bfsl(x, y, sd_x, sd_y)
+fit = bfsl(pearson_york)
 plot(fit)
 
 }

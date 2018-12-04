@@ -1,23 +1,21 @@
 #' Controls the iterations in bfsl.
 #'
-#' \code{bfsl.control} allows the user to set some characteristics of the \code{bfsl}
+#' \code{bfsl_control} allows the user to set some characteristics of the \code{bfsl}
 #' best-fit straight line algorithm.
 #'
 #' @param tol A positive numeric value specifying the tolerance level for the
 #' convergence criterion
-#' @param maxiter A positive integer specifying the maximum number of iterations allowed.
+#' @param maxit A positive integer specifying the maximum number of iterations allowed.
 #'
-#' @return A \code{list} with two components:
-#' \item{tol}{}
-#' \item{maxiter}{}
+#' @return A \code{list} with two components named as the arguments.
 #'
 #' @seealso \code{\link{bfsl}}
 #'
-#' @examples bfsl.control(tol = 1e-8, maxiter = 1000)
+#' @examples bfsl_control(tol = 1e-8, maxit = 1000)
 #'
 #' @export
-bfsl.control = function(tol = 1e-10, maxiter = 100) {
-  list(tol = tol, maxiter = maxiter)
+bfsl_control = function(tol = 1e-10, maxit = 100) {
+  list(tol = tol, maxit = maxit)
 }
 
 #' Calculates the best-fit straight line.
@@ -63,10 +61,12 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #' @param r An optional vector of correlation coefficients between errors in
 #' \emph{x} and \emph{y}. If it is of length one, all data points are assumed to
 #' have the same correlation coefficient.
-#' @param control An optional list of control settings. See \code{\link{bfsl.control}}
+#' @param control An optional list of control settings. See \code{\link{bfsl_control}}
 #' for the names of the settable control values and their effect.
+#' @param ... Additional arguments.
 #'
-#' @return A \code{list} with the components:
+#' @return An object of class "\code{bfsl}", which is a \code{list} containing
+#' the following components:
 #' \item{coefficients}{A \code{2x2} matrix with columns of the fitted coefficients
 #' (intercept and slope) and their standard errors.}
 #' \item{chisq}{The goodness of fit.}
@@ -87,11 +87,137 @@ bfsl.control = function(tol = 1e-10, maxiter = 100) {
 #' sd_y = 1/sqrt(pearson_york$w_y)
 #' bfsl(x, y, sd_x, sd_y)
 #'
-#' fit = bfsl(x, y, sd_x, sd_y)
+#' fit = bfsl(pearson_york)
 #' plot(fit)
 #'
 #' @export
-bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
+bfsl <- function(...) { UseMethod("bfsl") }
+
+
+#' @rdname bfsl
+#' @export
+#'
+bfsl.default = function(x, y, sd_x = 0, sd_y = 1, r = 0,
+                        control = bfsl_control(), ...) {
+
+  if (is.list(x)) {
+    return(bfsl.data.frame(x, control))
+  }
+  cl = match.call()
+
+  ctrl = bfsl_control()
+  if(!missing(control)) {
+    control = as.list(control)
+    ctrl[names(control)] = control
+  }
+
+  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
+
+  return(out)
+}
+
+
+#' @param data A data frame or list containing the variables \code{x}, \code{y},
+#' and optionally \code{sd_x}, \code{sd_y} and \code{r}. If the weights \code{w_x}
+#' and \code{w_y} are given, then \code{sd_x} and \code{sd_y} are calculated from
+#' \code{sd_x = 1/sqrt(w_x)} and \code{sd_y = 1/sqrt(w_y)}. \code{sd_x},
+#' \code{sd_y} or \code{r} from \code{data} can be overwritten by specifying
+#' these variables as additional function arguments.
+#'
+#' @rdname bfsl
+#' @export
+bfsl.data.frame = function(data, control = bfsl_control(), ...) {
+
+  # extract the variables from data
+  if (exists("x", data)) {
+    x = data$x
+  } else {
+    stop("x variable is missing in data.")
+  }
+  if (exists("y", data)) {
+    y = data$y
+  } else {
+    stop("y variable is missing in data.")
+  }
+  if (exists("sd_x", data)) {
+    sd_x = data$sd_x
+  } else {
+    sd_x = 0
+  }
+  if (exists("sd_y", data)) {
+    sd_y = data$sd_y
+  } else {
+    sd_y = 1
+  }
+  if (exists("w_x", data)) {
+    sd_x = 1/sqrt(data$w_x)
+  }
+  if (exists("w_y", data)) {
+    sd_y = 1/sqrt(data$w_y)
+  }
+  if (exists("r", data)) {
+    r = data$r
+  } else {
+    r = 0
+  }
+
+  # overwrite sd_x or sd_y if they are given as a function argument
+  arg = list(...)
+  if (exists("sd_x", arg)) {
+    sd_x = arg$sd_x
+  }
+  if (exists("sd_y", arg)) {
+    sd_y = arg$sd_y
+  }
+  if (exists("r", arg)) {
+    r = arg$r
+  }
+
+  # record the function call
+  cl = match.call()
+
+  ctrl = bfsl_control()
+  if(!missing(control)) {
+    control = as.list(control)
+    ctrl[names(control)] = control
+  }
+
+  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
+
+  return(out)
+}
+
+
+#' @param formula A formula specifying the bivariate model (as in \code{\link{lm}},
+#' but here only \code{y ~ x} or \code{x ~ y} makes sense).
+#' @rdname bfsl
+#' @export
+#'
+bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 0,
+                        control = bfsl_control(), ...) {
+
+  cl = match.call()
+  mf = match.call(expand.dots = FALSE)
+  m = match(c("formula", "data", "sd_x", "sd_y", "r"), names(mf), 0)
+  mf = mf[c(1, m)]
+  mf$drop.unused.levels = TRUE
+  mf[[1]] = as.name("model.frame")
+  mf = eval(mf, parent.frame())
+  y = mf[,1]
+  x = mf[,2]
+
+  ctrl = bfsl_control()
+  if(!missing(control)) {
+    control = as.list(control)
+    ctrl[names(control)] = control
+  }
+
+  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
+
+  return(out)
+}
+
+bfsl_fit = function(x, y, sd_x, sd_y, r, control, cl) {
 
   # check arguments
   stopifnot(is.numeric(x), is.numeric(y), is.numeric(sd_x), is.numeric(sd_y),
@@ -105,9 +231,6 @@ bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
     stop("Argument 'sd_y' must be a vector the same length as 'y' or of length 1.")
   if (!is.vector(r) || (length(r) != n && length(r) != 1))
     stop("Argument 'r' must be a vector the same length as 'x' or of length 1.")
-
-  # record the function call
-  cl = match.call()
 
   # ordinary least squares for initial guess value of slope
   x0 = as.matrix(cbind(1,x))
@@ -131,7 +254,7 @@ bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
   # iterate until the slope converges to within the tolerance
   b_diff = 2*control$tol
   i = 0
-  while (b_diff > control$tol && i < control$maxiter) {
+  while (b_diff > control$tol && i < control$maxit) {
     i =  i + 1
     b0 = b
     W = wX*wY/(wX + b^2*wY - 2*b*r*alpha)
@@ -152,7 +275,7 @@ bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
   chisq = sum(W*(y - b*x - a)^2)/(length(x)-2)  # goodness of fit
 
   # convergence information
-  convInfo = list(isConv = (i<control$maxiter), finIter = i, finTol = b_diff)
+  convInfo = list(isConv = (i<control$maxit), finIter = i, finTol = b_diff)
 
   # fitted coefficients including standard errors
   coef = c(a, b)
@@ -171,12 +294,21 @@ bfsl = function(x, y, sd_x = 0, sd_y = 1, r = 0, control = bfsl.control()) {
 }
 
 
+#' Print method for bfsl results
+#'
+#' \code{print} method for class "\code{bfsl}".
+#'
+#' @param x An object of class "\code{bfsl}".
+#' @param digits The number of significant digits to use when printing.
+#' @param ... Further arguments passed to \code{print.default}.
+#'
 #' @export
 print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
 {
   cat("Best-fit straight line\n\n")
 
-  print.default(format(x$coefficients, digits = digits), print.gap = 2L, quote = FALSE)
+  print.default(format(x$coefficients, digits = digits), print.gap = 2L,
+                quote = FALSE, ...)
 
   cat("\nGoodness of fit:\n")
   cat(format(x$chisq, digits = digits))
@@ -184,7 +316,19 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
   invisible(x)
 }
 
+#' Plot method for bfsl results
+#'
+#' Plot method for objects of class "\code{bfsl}".
+#'
+#' \code{plot.bfsl} plots the data points with error bars and the calculated
+#' best-fit straight line.
+#'
+#' @param x An object of class "\code{bfsl}".
+#' @param grid If \code{TRUE} (default) grid lines are plotted.
+#' @param ... Further parameters to be passed to the plotting routines.
+#'
 #' @importFrom graphics abline plot points segments
+#'
 #' @export
 plot.bfsl = function(x, grid = TRUE, ...)
 {
