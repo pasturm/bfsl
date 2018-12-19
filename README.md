@@ -5,12 +5,14 @@
 
 [![Travis build
 status](https://travis-ci.org/pasturm/bfsl.svg?branch=master)](https://travis-ci.org/pasturm/bfsl)
+[![codecov](https://codecov.io/gh/pasturm/bfsl/branch/master/graph/badge.svg)](https://codecov.io/gh/pasturm/bfsl)
 [![CRAN
-version](https://www.r-pkg.org/badges/version/bfsl)](https://cran.r-project.org/package=bfsl)
-[![CRAN total
-downloads](https://cranlogs.r-pkg.org/badges/grand-total/bfsl)](https://cran.r-project.org/package=bfsl)
+version](https://www.r-pkg.org/badges/version-last-release/bfsl)](https://cran.r-project.org/package=bfsl)
+[![rpackages.io
+rank](http://www.rpackages.io/badge/bfsl.svg)](http://www.rpackages.io/package/bfsl)
 [![CRAN
 downloads/month](https://cranlogs.r-pkg.org/badges/bfsl)](https://cran.r-project.org/package=bfsl)
+<!-- [![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/bfsl)](https://cran.r-project.org/package=bfsl) -->
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 

@@ -66,3 +66,18 @@ test_that("bfsl works with data frames, lists, matrices", {
   expect_equal(fit5$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit6$coefficients[1,1], fit1$coefficients[1,1])
 })
+
+test_that("print method works", {
+  expect_output(print(bfsl(pearson_york)),
+"Best-fit straight line
+
+           Estimate  Std. Error
+Intercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n
+Goodness of fit:
+1.483"
+)
+})
+
+test_that("plot method does not create an error", {
+  expect_equal(plot(bfsl(pearson_york)), NULL)
+})
