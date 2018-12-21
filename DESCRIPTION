@@ -1,6 +1,6 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.1.0.9000
+Version: 0.1.0.9002
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: Provides the solution from York (1968) <doi:10.1016/S0012-821X(68)80059-7>
   for fitting a straight line to bivariate data with errors in both coordinates.

@@ -252,7 +252,7 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
 #' @param grid If \code{TRUE} (default) grid lines are plotted.
 #' @param ... Further parameters to be passed to the plotting routines.
 #'
-#' @importFrom graphics abline plot points segments
+#' @importFrom graphics abline plot points arrows
 #'
 #' @export
 plot.bfsl = function(x, grid = TRUE, ...)
@@ -263,21 +263,14 @@ plot.bfsl = function(x, grid = TRUE, ...)
   sd_x = obj$data$sd_x
   sd_y = obj$data$sd_y
 
-  bw_x = 0.01*diff(range(x))  # bar width in x direction
-  bw_y = 0.015*diff(range(y))  # bar width in y direction
-
   plot(x, y, xlim = c(min(x-sd_x), max(x+sd_x)),
        ylim = c(min(y-sd_y), max(y+sd_y)), type = "n", ...)
   if (grid) grid()
   points(x, y, ...)
 
   # error bars
-  segments(x, y-sd_y, x, y+sd_y)
-  segments(x-bw_x, y+sd_y, x+bw_x, y+sd_y)
-  segments(x-bw_x, y-sd_y,x+bw_x, y-sd_y)
-  segments(x-sd_x, y,x+sd_x, y)
-  segments(x+sd_x, y-bw_y, x+sd_x, y+bw_y)
-  segments(x-sd_x, y-bw_y, x-sd_x, y+bw_y)
+  arrows(x, y-sd_y, x, y+sd_y, length = 0.05, angle = 90, code = 3)
+  arrows(x-sd_x, y, x+sd_x, y, length = 0.05, angle = 90, code = 3)
 
   # fit line
   abline(coef = obj$coefficients[,1])
