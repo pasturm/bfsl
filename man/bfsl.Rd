@@ -79,13 +79,13 @@ indicates overfitting: either the model is improperly fitting noise, or the
 measurement errors have been overestimated.
 }
 \examples{
-x = pearson_york$x
-y = pearson_york$y
-sd_x = 1/sqrt(pearson_york$w_x)
-sd_y = 1/sqrt(pearson_york$w_y)
+x = pearson_york_data$x
+y = pearson_york_data$y
+sd_x = 1/sqrt(pearson_york_data$w_x)
+sd_y = 1/sqrt(pearson_york_data$w_y)
 bfsl(x, y, sd_x, sd_y)
 
-fit = bfsl(pearson_york)
+fit = bfsl(pearson_york_data)
 plot(fit)
 
 }

@@ -21,6 +21,6 @@
 #' https://doi.org/10.1139/p66-090
 #'
 #' @examples
-#' bfsl(pearson_york)
+#' bfsl(pearson_york_data)
 #'
-"pearson_york"
+"pearson_york_data"

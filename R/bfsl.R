@@ -88,13 +88,13 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' https://doi.org/10.1016/S0012-821X(68)80059-7
 #'
 #' @examples
-#' x = pearson_york$x
-#' y = pearson_york$y
-#' sd_x = 1/sqrt(pearson_york$w_x)
-#' sd_y = 1/sqrt(pearson_york$w_y)
+#' x = pearson_york_data$x
+#' y = pearson_york_data$y
+#' sd_x = 1/sqrt(pearson_york_data$w_x)
+#' sd_y = 1/sqrt(pearson_york_data$w_y)
 #' bfsl(x, y, sd_x, sd_y)
 #'
-#' fit = bfsl(pearson_york)
+#' fit = bfsl(pearson_york_data)
 #' plot(fit)
 #'
 #' @export

@@ -13,6 +13,9 @@ rank](http://www.rpackages.io/badge/bfsl.svg)](http://www.rpackages.io/package/b
 [![CRAN
 downloads/month](https://cranlogs.r-pkg.org/badges/bfsl)](https://cran.r-project.org/package=bfsl)
 <!-- [![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/bfsl)](https://cran.r-project.org/package=bfsl) -->
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 
@@ -43,9 +46,9 @@ coordinates.
 
 ``` r
 library(bfsl)
-fit = bfsl(pearson_york)
+fit = bfsl(pearson_york_data)
 plot(fit)
-ols = bfsl(pearson_york, sd_x = 0, sd_y = 1)
+ols = bfsl(pearson_york_data, sd_x = 0, sd_y = 1)
 abline(coef = ols$coef[,1], lty = 2)
 legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
 ```
@@ -53,7 +56,7 @@ legend("topright", c("ordinary least squares", "best-fit straight line"), lty = 
 <img src="man/figures/README-plot-1.png" width="75%" />
 
 ``` r
-bfsl(pearson_york)
+bfsl(pearson_york_data)
 #> Best-fit straight line
 #> 
 #>            Estimate  Std. Error
