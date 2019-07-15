@@ -4,7 +4,8 @@
 \alias{bfsl}
 \title{Calculates the Best-fit Straight Line}
 \usage{
-bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control())
+bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0,
+  control = bfsl_control())
 }
 \arguments{
 \item{x}{A vector of \emph{x} observations or a data frame (or an
