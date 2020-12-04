@@ -1,6 +1,6 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.1.0.9005
+Version: 0.1.0.9006
 Date: 2020-04-17
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: Provides the solution from York (1968) <doi:10.1016/S0012-821X(68)80059-7>

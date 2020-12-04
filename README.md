@@ -3,8 +3,10 @@
 
 # R package bfsl: Best-fit Straight Line
 
-[![Travis build
-status](https://travis-ci.org/pasturm/bfsl.svg?branch=master)](https://travis-ci.org/pasturm/bfsl)
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/pasturm/bfsl/workflows/R-CMD-check/badge.svg)](https://github.com/pasturm/bfsl/actions)
 [![codecov](https://codecov.io/gh/pasturm/bfsl/branch/master/graph/badge.svg)](https://codecov.io/gh/pasturm/bfsl)
 [![CRAN
 version](https://www.r-pkg.org/badges/version-last-release/bfsl)](https://cran.r-project.org/package=bfsl)
@@ -15,6 +17,7 @@ downloads](https://cranlogs.r-pkg.org/badges/grand-total/bfsl)](https://cran.r-p
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+<!-- badges: end -->
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 
