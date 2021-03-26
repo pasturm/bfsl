@@ -1,6 +1,5 @@
 ^tools$
 ^README\.Rmd$
-^\.travis\.yml$
 ^bfsl\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$

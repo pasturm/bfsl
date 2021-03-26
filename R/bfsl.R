@@ -236,7 +236,7 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
                 quote = FALSE, ...)
 
   cat("\nGoodness of fit:\n")
-  cat(format(x$chisq, digits = digits))
+  cat(format(x$chisq, digits = digits), "\n")
 
   invisible(x)
 }
