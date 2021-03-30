@@ -14,5 +14,5 @@
 \item{...}{Further arguments passed to \code{print.default}.}
 }
 \description{
-\code{print} method for class "\code{bfsl}".
+\code{print} method for class \code{"bfsl"}.
 }

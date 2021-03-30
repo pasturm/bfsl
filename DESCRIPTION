@@ -1,20 +1,20 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.1.0.9006
-Date: 2020-04-17
+Version: 0.1.0.9008
+Date: 2021-04-01
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
-Description: Provides the solution from York (1968) <doi:10.1016/S0012-821X(68)80059-7>
-  for fitting a straight line to bivariate data with errors in both coordinates.
-  It gives unbiased estimates of the intercept, slope and standard errors of the
-  best-fit straight line to independent points with (possibly correlated) 
-  normally distributed errors in both x and y. Other commonly used 
-  errors-in-variables methods, such as orthogonal distance regression, geometric
-  mean regression or Deming regression are special cases of York’s solution.
+Description: How to fit a straight line through a set of points with errors in
+  both coordinates? The bfsl package provides unbiased estimates of the intercept, 
+  slope and standard errors for the best-fit straight line to independent points 
+  with (possibly correlated) normally distributed errors in both x and y 
+  (York, 2004 <doi:10.1119/1.1632486>). Other commonly used errors-in-variables 
+  methods, such as orthogonal distance regression, geometric mean regression or 
+  Deming regression are special cases of the bfsl solution.
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 URL: https://github.com/pasturm/bfsl
 BugReports: https://github.com/pasturm/bfsl/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Suggests: testthat

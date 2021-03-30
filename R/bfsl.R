@@ -77,6 +77,10 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' \item{coefficients}{A \code{2x2} matrix with columns of the fitted coefficients
 #' (intercept and slope) and their standard errors.}
 #' \item{chisq}{The goodness of fit  (see Details).}
+#' \item{fitted.values}{The fitted mean values.}
+#' \item{residuals}{The residuals, that is \code{y} observations minus fitted values.}
+#' \item{df.residual}{The residual degrees of freedom.}
+#' \item{cov.ab}{The covariance of the slope and intercept.}
 #' \item{control}{The control \code{list} used, see the \code{control} argument.}
 #' \item{convInfo}{A \code{list} with convergence information.}
 #' \item{call}{The matched call.}
@@ -209,7 +213,14 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
   coefficients = cbind(coef, sterr)
   dimnames(coefficients) = list(names(coef), c("Estimate", "Std. Error"))
 
+  fitted.values = b*x+a
+  residuals = y - fitted.values
+  df.residual = length(y)-2
+  cov.ab = -meanX*sd_b^2
+
   bfsl.out = list(coefficients = coefficients, chisq = chisq,
+                  fitted.values = fitted.values, residuals = residuals,
+                  df.residual = df.residual, cov.ab = cov.ab,
                   control = control, convInfo = convInfo, call = cl,
                   data = list(x = x, y = y, sd_x = sd_x, sd_y = sd_y, r = r))
 
@@ -221,7 +232,7 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
 
 #' Print Method for bfsl Results
 #'
-#' \code{print} method for class "\code{bfsl}".
+#' \code{print} method for class \code{"bfsl"}.
 #'
 #' @param x An object of class "\code{bfsl}".
 #' @param digits The number of significant digits to use when printing.
@@ -242,8 +253,6 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 
 #' Plot Method for bfsl Results
-#'
-#' Plot method for objects of class "\code{bfsl}".
 #'
 #' \code{plot.bfsl} plots the data points with error bars and the calculated
 #' best-fit straight line.
@@ -274,4 +283,61 @@ plot.bfsl = function(x, grid = TRUE, ...)
 
   # fit line
   abline(coef = obj$coefficients[,1])
+}
+
+
+#' Predict Method for bfsl Model Fits
+#'
+#' \code{predict.bfsl} predicts future values based on the bfsl fit.
+#'
+#' @param x Object of class \code{"bfsl"}.
+#' @param newdata A data frame with variable \code{x} to predict.
+#' If omitted, the fitted values are used.
+#' @param interval Type of interval calculation. \code{"none"} or \code{"confidence"}.
+#' @param level Confidence level.
+#' @param se.fit A switch indicating if standard errors are returned.
+#'
+#' @return \code{predict.bfsl} produces a vector of predictions or a matrix of
+#' predictions and bounds with column names \code{fit}, \code{lwr}, and \code{upr}
+#' if interval is set to \code{"confidence"}.
+#'
+#' If \code{se.fit} is \code{TRUE}, a list with the following components is returned:
+#' \tabular{ll}{
+#' \code{fit} \tab Vector or matrix as above \cr
+#' \code{se.fit} \tab Standard error of predicted means
+#' }
+#'
+#' @export
+predict.bfsl = function(x, newdata, interval = c("none", "confidence"),
+                        level = 0.95, se.fit = FALSE)
+{
+  Terms = terms(~x)
+  if (missing(newdata) || is.null(newdata)) {
+    newdata = data.frame(x = x$data$x)
+  }
+  else if (!("x" %in% colnames(newdata))) {
+    stop('No column with name "x" found in newdata.')
+  }
+  m = model.frame(Terms, newdata)
+  X = model.matrix(Terms, m)
+  beta = x$coefficients[,1]
+  predictor = drop(X %*% beta)
+  interval = match.arg(interval)
+  if (interval=="confidence") {
+    df = x$df.residual  # degree of freedom
+    tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
+    V = diag(x$coefficients[,2]^2)  # variance covariance matrix
+    V[1,2] = x$cov.ab
+    V[2,1] = x$cov.ab
+    var.fit = rowSums((X %*% V) * X)  # point-wise variance for predicted mean
+    predictor = cbind(predictor, predictor + outer(sqrt(var.fit), tfrac))
+    colnames(predictor) = c("fit", "lwr", "upr")
+  }
+  else if (interval=="prediction") {
+    stop("Prediction intervals are not implemented for class 'bfsl'")
+  }
+  if (se.fit) {
+    predictor = list(fit = predictor, se.fit = as.numeric(sqrt(var.fit)))
+  }
+  return(predictor)
 }

@@ -14,9 +14,6 @@
 \item{...}{Further parameters to be passed to the plotting routines.}
 }
 \description{
-Plot method for objects of class "\code{bfsl}".
-}
-\details{
 \code{plot.bfsl} plots the data points with error bars and the calculated
 best-fit straight line.
 }

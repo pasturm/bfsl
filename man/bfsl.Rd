@@ -4,8 +4,7 @@
 \alias{bfsl}
 \title{Calculates the Best-fit Straight Line}
 \usage{
-bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0,
-  control = bfsl_control())
+bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control())
 }
 \arguments{
 \item{x}{A vector of \emph{x} observations or a data frame (or an
@@ -40,6 +39,10 @@ the following components:
 \item{coefficients}{A \code{2x2} matrix with columns of the fitted coefficients
 (intercept and slope) and their standard errors.}
 \item{chisq}{The goodness of fit  (see Details).}
+\item{fitted.values}{The fitted mean values.}
+\item{residuals}{The residuals, that is \code{y} observations minus fitted values.}
+\item{df.residual}{The residual degrees of freedom.}
+\item{cov.ab}{The covariance of the slope and intercept.}
 \item{control}{The control \code{list} used, see the \code{control} argument.}
 \item{convInfo}{A \code{list} with convergence information.}
 \item{call}{The matched call.}

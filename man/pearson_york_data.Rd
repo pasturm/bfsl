@@ -4,13 +4,15 @@
 \name{pearson_york_data}
 \alias{pearson_york_data}
 \title{Example data}
-\format{A data frame with 10 rows and 4 variables:
+\format{
+A data frame with 10 rows and 4 variables:
 \describe{
   \item{x}{\emph{x} observations}
   \item{w_x}{weights of \emph{x}}
   \item{y}{\emph{y} observations}
   \item{w_y}{weights of \emph{y}}
-}}
+}
+}
 \usage{
 pearson_york_data
 }
