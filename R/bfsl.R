@@ -97,12 +97,18 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' sd_x = 1/sqrt(pearson_york_data$w_x)
 #' sd_y = 1/sqrt(pearson_york_data$w_y)
 #' bfsl(x, y, sd_x, sd_y)
+#' bfsl(y~x, pearson_york_data, sd_x, sd_y)
 #'
 #' fit = bfsl(pearson_york_data)
 #' plot(fit)
 #'
 #' @export
-bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()) {
+bfsl <- function(...) { UseMethod("bfsl") }
+
+#' @rdname bfsl
+#' @export
+bfsl.default = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0,
+                        control = bfsl_control(), ...) {
 
   # dispatch variables if first argument is a data frame, list, etc.
   if (!is.vector(x) || is.list(x)) {
@@ -141,6 +147,43 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
     control = as.list(control)
     ctrl[names(control)] = control
   }
+
+  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
+
+  return(out)
+}
+
+#' @param formula A formula specifying the bivariate model (as in \code{\link{lm}},
+#' but here only \code{y ~ x} makes sense).
+#' @param data A data.frame containing the variables of the model.
+#'
+#' @rdname bfsl
+#' @export
+bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 0,
+                        control = bfsl_control(), ...) {
+
+  cl = match.call()
+  mf = match.call(expand.dots = FALSE)
+  m = match(c("formula", "data"), names(mf), 0)
+  mf = mf[c(1, m)]
+  mf$drop.unused.levels = TRUE
+  mf[[1L]] = quote(stats::model.frame)
+  mf = eval(mf, parent.frame())
+
+  y = mf[,1]
+  x = mf[,2]
+  ctrl = bfsl_control()
+  if(!missing(control)) {
+    control = as.list(control)
+    ctrl[names(control)] = control
+  }
+
+  out = bfsl_fit(x, y, sd_x, sd_y, r, ctrl, cl)
+
+  return(out)
+}
+
+bfsl_fit = function(x, y, sd_x, sd_y, r, control, cl) {
 
   # check arguments
   if (is.null(y)) { stop("Argument 'y' is missing.") }
@@ -229,7 +272,6 @@ bfsl = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control()
   return(bfsl.out)
 }
 
-
 #' Print Method for bfsl Results
 #'
 #' \code{print} method for class \code{"bfsl"}.
@@ -290,7 +332,7 @@ plot.bfsl = function(x, grid = TRUE, ...)
 #'
 #' \code{predict.bfsl} predicts future values based on the bfsl fit.
 #'
-#' @param x Object of class \code{"bfsl"}.
+#' @param object Object of class \code{"bfsl"}.
 #' @param newdata A data frame with variable \code{x} to predict.
 #' If omitted, the fitted values are used.
 #' @param interval Type of interval calculation. \code{"none"} or \code{"confidence"}.
@@ -307,34 +349,46 @@ plot.bfsl = function(x, grid = TRUE, ...)
 #' \code{se.fit} \tab Standard error of predicted means
 #' }
 #'
+#' @examples
+#' fit = bfsl(pearson_york_data)
+#' predict(fit, interval = "confidence")
+#' new = data.frame(x = seq(0, 8, 0.5))
+#' predict(fit, new, se.fit = TRUE)
+#'
+#' pred.clim = predict(fit, new, interval = "confidence")
+#' matplot(new$x, pred.clim, lty = c(1,2,2), type = "l", xlab = "x", ylab = "y")
+#' df = fit$data
+#' points(df$x, df$y)
+#' arrows(df$x, df$y-df$sd_y, df$x, df$y+df$sd_y,
+#'        length = 0.05, angle = 90, code = 3)
+#' arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y,
+#'        length = 0.05, angle = 90, code = 3)
+#'
 #' @export
-predict.bfsl = function(x, newdata, interval = c("none", "confidence"),
+predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
                         level = 0.95, se.fit = FALSE)
 {
   Terms = terms(~x)
   if (missing(newdata) || is.null(newdata)) {
-    newdata = data.frame(x = x$data$x)
+    newdata = data.frame(x = object$data$x)
   }
   else if (!("x" %in% colnames(newdata))) {
     stop('No column with name "x" found in newdata.')
   }
   m = model.frame(Terms, newdata)
   X = model.matrix(Terms, m)
-  beta = x$coefficients[,1]
+  beta = object$coefficients[,1]
   predictor = drop(X %*% beta)
   interval = match.arg(interval)
   if (interval=="confidence") {
-    df = x$df.residual  # degree of freedom
+    df = object$df.residual  # degree of freedom
     tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
-    V = diag(x$coefficients[,2]^2)  # variance covariance matrix
-    V[1,2] = x$cov.ab
-    V[2,1] = x$cov.ab
+    V = diag(object$coefficients[,2]^2)  # variance covariance matrix
+    V[1,2] = object$cov.ab
+    V[2,1] = object$cov.ab
     var.fit = rowSums((X %*% V) * X)  # point-wise variance for predicted mean
     predictor = cbind(predictor, predictor + outer(sqrt(var.fit), tfrac))
     colnames(predictor) = c("fit", "lwr", "upr")
-  }
-  else if (interval=="prediction") {
-    stop("Prediction intervals are not implemented for class 'bfsl'")
   }
   if (se.fit) {
     predictor = list(fit = predictor, se.fit = as.numeric(sqrt(var.fit)))

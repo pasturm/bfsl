@@ -5,7 +5,7 @@
 \title{Predict Method for bfsl Model Fits}
 \usage{
 \method{predict}{bfsl}(
-  x,
+  object,
   newdata,
   interval = c("none", "confidence"),
   level = 0.95,
@@ -13,7 +13,7 @@
 )
 }
 \arguments{
-\item{x}{Object of class \code{"bfsl"}.}
+\item{object}{Object of class \code{"bfsl"}.}
 
 \item{newdata}{A data frame with variable \code{x} to predict.
 If omitted, the fitted values are used.}
@@ -37,4 +37,20 @@ If \code{se.fit} is \code{TRUE}, a list with the following components is returne
 }
 \description{
 \code{predict.bfsl} predicts future values based on the bfsl fit.
+}
+\examples{
+fit = bfsl(pearson_york_data)
+predict(fit, interval = "confidence")
+new = data.frame(x = seq(0, 8, 0.5))
+predict(fit, new, se.fit = TRUE)
+
+pred.clim = predict(fit, new, interval = "confidence")
+matplot(new$x, pred.clim, lty = c(1,2,2), type = "l", xlab = "x", ylab = "y")
+df = fit$data
+points(df$x, df$y)
+arrows(df$x, df$y-df$sd_y, df$x, df$y+df$sd_y,
+       length = 0.05, angle = 90, code = 3)
+arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y,
+       length = 0.05, angle = 90, code = 3)
+
 }

@@ -27,25 +27,53 @@ knitr::opts_chunk$set(
 
 ### How to fit a straight line through a set of points with errors in both coordinates?
 
-The solution for the best-fit straight line to independent points with normally distributed errors in both _x_ and _y_ is known from York ([1966](#york66), [1968](#york68), [2004](#york04)). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the _x_ and _y_ errors are correlated.
-
-Surprisingly, as Wehr and Saleska ([2017](#wehr17)) point out, York's solution has escaped the attention of many scientists that are writing on straight-line fitting with errors in both _x_ and _y_ (also known as Model II regressions, errors-in-variables models or measurement error models).
-
-Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also called major axis regression), geometric mean regression (also called reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
+The solution for the best-fit straight line to independent points with normally distributed errors in both _x_ and _y_ is known e.g. from York ([1966](#york66), [1968](#york68), [2004](#york04)). It provides unbiased estimates of the intercept, slope and standard errors of the best-fit straight line, even when the _x_ and _y_ errors are correlated.
 
 The bfsl package implements York's general solution and provides the best-fit straight line of bivariate data with errors in both coordinates.
 
+Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also called major axis regression), geometric mean regression (also called reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
+
+
 ## Example
+<!-- # ```{r print} -->
+<!-- # library(bfsl) -->
+<!-- # bfsl(pearson_york_data) -->
+<!-- # ``` -->
 ```{r plot, out.width="75%", dpi=300}
 library(bfsl)
 fit = bfsl(pearson_york_data)
+print(fit)
+
 plot(fit)
 ols = bfsl(pearson_york_data, sd_x = 0, sd_y = 1)
 abline(coef = ols$coef[,1], lty = 2)
 legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
 ```
-```{r print}
-bfsl(pearson_york_data)
+
+Confindence interval:
+```{r confidence, out.width="75%", dpi=300}
+df = fit$data
+newx = seq(min(df$x-df$sd_x), max(df$x+df$sd_x), length.out = 100)
+preds = predict(fit, newdata = data.frame(x=newx), interval = 'confidence')
+
+# plot
+plot(y ~ x, data = df, type = 'n', xlim = c(min(df$x-df$sd_x), max(df$x+df$sd_x)),
+     ylim = c(min(df$y-df$sd_y), max(df$y+df$sd_y)), las = 1)
+grid()
+polygon(c(rev(newx), newx), c(rev(preds[ ,3]), preds[ ,2]), col = 'grey90', border = NA)
+abline(coef = fit$coef[,1], lty = 1)
+points(df$x, df$y)
+arrows(df$x, df$y-df$sd_y, df$x, df$y+df$sd_y, length = 0.05, angle = 90, code = 3)
+arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y, length = 0.05, angle = 90, code = 3)
+```
+```{r ggplot, out.width="60%", dpi=300}
+# with ggplot2
+library(ggplot2)
+ggplot(data = pearson_york_data, aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  geom_smooth(method = bfsl, method.args = list(sd_x = df$sd_x, sd_y = df$sd_y)) +
+  geom_errorbar(aes(ymin = df$y-df$sd_y, ymax = df$y+df$sd_y), width = 0.05) +
+  geom_errorbarh(aes(xmin = df$x-df$sd_x, xmax = df$x+df$sd_x), height = 0.05)
 ```
 
 ## Installation
@@ -68,7 +96,14 @@ See the [NEWS file](https://github.com/pasturm/bfsl/blob/master/NEWS.md) for lat
 <a name="york68"></a>York, D. (1968). Least squares fitting of a straight line with correlated errors. _Earth and Planetary Science Letters_, 5, 320–324,
 https://doi.org/10.1016/S0012-821X(68)80059-7
 
-<a name="york04"></a>York D. et al. (2004). Unified equations for the slope, intercept, and 
+<a name="williamson68"></a>Williamson, J. H. (1968). Least-squares fitting of a straight line,
+_Canadian Journal of Physics_, 46(16), 1845-1847, https://doi.org/10.1139/p68-523
+
+<a name="york04"></a>York, D. et al. (2004). Unified equations for the slope, intercept, and 
 standard errors of the best straight line, _American Journal of Physics_, 72, 367-375, https://doi.org/10.1119/1.1632486
+
+<a name="cantrell08"></a>Cantrell, C. A. (2008). Technical Note: Review of methods 
+for linear least-squares fitting of data and application to atmospheric chemistry problems,
+_Atmospheric Chemistry and Physics_, 8, 5477-5487, https://www.atmos-chem-phys.net/8/5477/2008/
 
 <a name="wehr17"></a>Wehr, R. and Saleska, S. R. (2017). The long-solved problem of the best-fit straight line: application to isotopic mixing lines, _Biogeosciences_, 14, 17-29, https://doi.org/10.5194/bg-14-17-2017

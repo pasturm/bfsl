@@ -2,9 +2,23 @@
 % Please edit documentation in R/bfsl.R
 \name{bfsl}
 \alias{bfsl}
+\alias{bfsl.default}
+\alias{bfsl.formula}
 \title{Calculates the Best-fit Straight Line}
 \usage{
-bfsl(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control())
+bfsl(...)
+
+\method{bfsl}{default}(x, y = NULL, sd_x = 0, sd_y = 1, r = 0, control = bfsl_control(), ...)
+
+\method{bfsl}{formula}(
+  formula,
+  data = parent.frame(),
+  sd_x = 0,
+  sd_y = 1,
+  r = 0,
+  control = bfsl_control(),
+  ...
+)
 }
 \arguments{
 \item{x}{A vector of \emph{x} observations or a data frame (or an
@@ -32,6 +46,11 @@ have the same correlation coefficient.}
 
 \item{control}{A list of control settings. See \code{\link{bfsl_control}}
 for the names of the settable control values and their effect.}
+
+\item{formula}{A formula specifying the bivariate model (as in \code{\link{lm}},
+but here only \code{y ~ x} makes sense).}
+
+\item{data}{A data.frame containing the variables of the model.}
 }
 \value{
 An object of class "\code{bfsl}", which is a \code{list} containing
@@ -88,6 +107,7 @@ y = pearson_york_data$y
 sd_x = 1/sqrt(pearson_york_data$w_x)
 sd_y = 1/sqrt(pearson_york_data$w_y)
 bfsl(x, y, sd_x, sd_y)
+bfsl(y~x, pearson_york_data, sd_x, sd_y)
 
 fit = bfsl(pearson_york_data)
 plot(fit)

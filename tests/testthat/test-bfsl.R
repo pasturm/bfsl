@@ -49,7 +49,7 @@ test_that("bfsl gives Deming regression solution", {
   expect_equal(fit$coefficients[2,1], b_deming)
 })
 
-test_that("bfsl works with data frames, lists, matrices", {
+test_that("bfsl works with data frames, lists, matrices, formulas", {
   x = pearson_york_data$x
   y = pearson_york_data$y
   sd_x = 1/sqrt(pearson_york_data$w_x)
@@ -60,11 +60,13 @@ test_that("bfsl works with data frames, lists, matrices", {
   fit4 = bfsl(as.array(as.matrix(pearson_york_data)))
   fit5 = bfsl(list(x = x, y = y, sd_x = sd_x, sd_y = sd_y))
   fit6 = bfsl(as.data.frame(x), y, sd_x, sd_y)
+  fit7 = bfsl(y ~ x, data =pearson_york_data, sd_x, sd_y)
   expect_equal(fit2$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit3$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit4$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit5$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit6$coefficients[1,1], fit1$coefficients[1,1])
+  expect_equal(fit7$coefficients[1,1], fit1$coefficients[1,1])
 })
 
 test_that("print method works", {
@@ -82,3 +84,14 @@ test_that("plot method does not create an error", {
   expect_equal(plot(bfsl(pearson_york_data)), NULL)
 })
 
+test_that("predict method works", {
+  fit = bfsl(pearson_york_data)
+  pred = predict(fit, interval = 'confidence', se.fit = TRUE)
+  expect_equal(as.numeric(pred$fit[1,]), c(5.47991022, 4.79970649, 6.16011396))
+  expect_equal(pred$se.fit[1], 0.29497074)
+  fit = bfsl(pearson_york_data$x, pearson_york_data$y, sd_x = 0, sd_y = 1)
+  pred = predict(fit, interval = 'confidence', se.fit = TRUE)
+  ols = lm(y ~ x, pearson_york_data)
+  pred_ols = predict(ols, interval = 'confidence', se.fit = TRUE)
+  expect_equal(pred$se.fit*sqrt(fit$chisq), pred_ols$se.fit)
+})

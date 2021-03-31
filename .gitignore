@@ -2,4 +2,3 @@
 .Rhistory
 *.Rproj
 .DS_Store
-/tools/*
