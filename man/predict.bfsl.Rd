@@ -9,7 +9,8 @@
   newdata,
   interval = c("none", "confidence"),
   level = 0.95,
-  se.fit = FALSE
+  se.fit = FALSE,
+  ...
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ If omitted, the fitted values are used.}
 \item{level}{Confidence level.}
 
 \item{se.fit}{A switch indicating if standard errors are returned.}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \value{
 \code{predict.bfsl} produces a vector of predictions or a matrix of

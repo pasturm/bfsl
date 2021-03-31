@@ -21,6 +21,8 @@ bfsl(...)
 )
 }
 \arguments{
+\item{...}{Further arguments passed to or from other methods.}
+
 \item{x}{A vector of \emph{x} observations or a data frame (or an
 object coercible by \code{\link{as.data.frame}} to a data frame) containing
 the named vectors \emph{x}, \emph{y}, and optionally \emph{sd_x},

@@ -1,4 +1,4 @@
-# bfsl 0.1.0.9009
+# bfsl 0.1.1
 
 * Updated README.md.
 * Using `arrows()` instead of `segments()` to plot error bars in `plot.bfsl()`.

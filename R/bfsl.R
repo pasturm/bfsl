@@ -71,6 +71,7 @@ bfsl_control = function(tol = 1e-10, maxit = 100) {
 #' have the same correlation coefficient.
 #' @param control A list of control settings. See \code{\link{bfsl_control}}
 #' for the names of the settable control values and their effect.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @return An object of class "\code{bfsl}", which is a \code{list} containing
 #' the following components:
@@ -338,6 +339,7 @@ plot.bfsl = function(x, grid = TRUE, ...)
 #' @param interval Type of interval calculation. \code{"none"} or \code{"confidence"}.
 #' @param level Confidence level.
 #' @param se.fit A switch indicating if standard errors are returned.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @return \code{predict.bfsl} produces a vector of predictions or a matrix of
 #' predictions and bounds with column names \code{fit}, \code{lwr}, and \code{upr}
@@ -364,29 +366,32 @@ plot.bfsl = function(x, grid = TRUE, ...)
 #' arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y,
 #'        length = 0.05, angle = 90, code = 3)
 #'
+#' @importFrom stats model.frame model.matrix terms qt
+#'
 #' @export
 predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
-                        level = 0.95, se.fit = FALSE)
+                        level = 0.95, se.fit = FALSE, ...)
 {
-  Terms = terms(~x)
   if (missing(newdata) || is.null(newdata)) {
     newdata = data.frame(x = object$data$x)
   }
   else if (!("x" %in% colnames(newdata))) {
     stop('No column with name "x" found in newdata.')
   }
-  m = model.frame(Terms, newdata)
-  X = model.matrix(Terms, m)
+  m = model.frame(terms(~x), newdata)
+  X = model.matrix(terms(~x), m)
   beta = object$coefficients[,1]
   predictor = drop(X %*% beta)
   interval = match.arg(interval)
-  if (interval=="confidence") {
-    df = object$df.residual  # degree of freedom
-    tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
+  if (se.fit || interval != "none") {
     V = diag(object$coefficients[,2]^2)  # variance covariance matrix
     V[1,2] = object$cov.ab
     V[2,1] = object$cov.ab
     var.fit = rowSums((X %*% V) * X)  # point-wise variance for predicted mean
+  }
+  if (interval=="confidence") {
+    df = object$df.residual  # degree of freedom
+    tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
     predictor = cbind(predictor, predictor + outer(sqrt(var.fit), tfrac))
     colnames(predictor) = c("fit", "lwr", "upr")
   }

@@ -1,6 +1,6 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.1.0.9009
+Version: 0.1.1
 Date: 2021-04-01
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: How to fit a straight line through a set of points with errors in
