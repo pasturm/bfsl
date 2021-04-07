@@ -60,7 +60,7 @@ test_that("bfsl works with data frames, lists, matrices, formulas", {
   fit4 = bfsl(as.array(as.matrix(pearson_york_data)))
   fit5 = bfsl(list(x = x, y = y, sd_x = sd_x, sd_y = sd_y))
   fit6 = bfsl(as.data.frame(x), y, sd_x, sd_y)
-  fit7 = bfsl(y ~ x, data =pearson_york_data, sd_x, sd_y)
+  fit7 = bfsl(y ~ x, data = pearson_york_data)
   expect_equal(fit2$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit3$coefficients[1,1], fit1$coefficients[1,1])
   expect_equal(fit4$coefficients[1,1], fit1$coefficients[1,1])

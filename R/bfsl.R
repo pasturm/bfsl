@@ -163,6 +163,22 @@ bfsl.default = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0,
 bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 0,
                         control = bfsl_control(), ...) {
 
+  if (missing("sd_x") && exists("sd_x", data)) {
+    sd_x = data$sd_x
+  }
+  if (missing("sd_y") && exists("sd_y", data)) {
+    sd_y = data$sd_y
+  }
+  if (missing("sd_x") && exists("w_x", data)) {
+    sd_x = 1/sqrt(data$w_x)
+  }
+  if (missing("sd_y") && exists("w_y", data)) {
+    sd_y = 1/sqrt(data$w_y)
+  }
+  if (missing("r") && exists("r", data)) {
+    r = data$r
+  }
+
   cl = match.call()
   mf = match.call(expand.dots = FALSE)
   m = match(c("formula", "data"), names(mf), 0)
@@ -173,6 +189,8 @@ bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 
 
   y = mf[,1]
   x = mf[,2]
+
+  # iterations control
   ctrl = bfsl_control()
   if(!missing(control)) {
     control = as.list(control)

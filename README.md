@@ -69,7 +69,7 @@ legend("topright", c("ordinary least squares", "best-fit straight line"), lty = 
 Confindence interval:
 
 ``` r
-df = fit$data
+df = as.data.frame(fit$data)
 newx = seq(min(df$x-df$sd_x), max(df$x+df$sd_x), length.out = 100)
 preds = predict(fit, newdata = data.frame(x=newx), interval = 'confidence')
 
@@ -89,11 +89,11 @@ arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y, length = 0.05, angle = 90, code =
 ``` r
 # with ggplot2
 library(ggplot2)
-ggplot(data = pearson_york_data, aes(x = x, y = y)) +
-  geom_point(shape = 1) +
-  geom_smooth(method = bfsl, method.args = list(sd_x = df$sd_x, sd_y = df$sd_y)) +
-  geom_errorbar(aes(ymin = df$y-df$sd_y, ymax = df$y+df$sd_y), width = 0.05) +
-  geom_errorbarh(aes(xmin = df$x-df$sd_x, xmax = df$x+df$sd_x), height = 0.05)
+ggplot(data = df, aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(method = bfsl) +
+  geom_errorbar(aes(ymin = y-sd_y, ymax = y+sd_y), width = 0.05) +
+  geom_errorbarh(aes(xmin = x-sd_x, xmax = x+sd_x), height = 0.05)
 #> `geom_smooth()` using formula 'y ~ x'
 ```
 
