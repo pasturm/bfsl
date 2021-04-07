@@ -13,8 +13,8 @@ bfsl(...)
 \method{bfsl}{formula}(
   formula,
   data = parent.frame(),
-  sd_x = 0,
-  sd_y = 1,
+  sd_x,
+  sd_y,
   r = 0,
   control = bfsl_control(),
   ...

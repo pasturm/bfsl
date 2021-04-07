@@ -57,8 +57,8 @@ newx = seq(min(df$x-df$sd_x), max(df$x+df$sd_x), length.out = 100)
 preds = predict(fit, newdata = data.frame(x=newx), interval = 'confidence')
 
 # plot
-plot(y ~ x, data = df, type = 'n', xlim = c(min(df$x-df$sd_x), max(df$x+df$sd_x)),
-     ylim = c(min(df$y-df$sd_y), max(df$y+df$sd_y)), las = 1)
+plot(y ~ x, data = df, type = 'n', xlim = c(min(x-sd_x), max(x+sd_x)),
+     ylim = c(min(y-sd_y), max(y+sd_y)), las = 1)
 grid()
 polygon(c(rev(newx), newx), c(rev(preds[ ,3]), preds[ ,2]), col = 'grey90', border = NA)
 abline(coef = fit$coef[,1], lty = 1)
@@ -71,7 +71,7 @@ arrows(df$x-df$sd_x, df$y, df$x+df$sd_x, df$y, length = 0.05, angle = 90, code =
 library(ggplot2)
 ggplot(data = df, aes(x = x, y = y)) +
   geom_point() +
-  geom_smooth(method = bfsl) +
+  geom_smooth(method = bfsl, method.args = list(sd_x = df$sd_x, sd_y = df$sd_y)) +
   geom_errorbar(aes(ymin = y-sd_y, ymax = y+sd_y), width = 0.05) +
   geom_errorbarh(aes(xmin = x-sd_x, xmax = x+sd_x), height = 0.05)
 ```

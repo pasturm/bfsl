@@ -160,7 +160,7 @@ bfsl.default = function(x, y = NULL, sd_x = 0, sd_y = 1, r = 0,
 #'
 #' @rdname bfsl
 #' @export
-bfsl.formula = function(formula, data = parent.frame(), sd_x = 0, sd_y = 1, r = 0,
+bfsl.formula = function(formula, data = parent.frame(), sd_x, sd_y, r = 0,
                         control = bfsl_control(), ...) {
 
   if (missing("sd_x") && exists("sd_x", data)) {
