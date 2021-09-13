@@ -95,3 +95,40 @@ test_that("predict method works", {
   pred_ols = predict(ols, interval = 'confidence', se.fit = TRUE)
   expect_equal(pred$se.fit*sqrt(fit$chisq), pred_ols$se.fit)
 })
+
+test_that("summary method works", {
+  fit = bfsl(pearson_york_data)
+  s = summary(fit)
+  expect_equal(s$p.value, 0.1572672287)
+  expect_output(print(summary(fit)),
+"Call:\nbfsl.default(x = pearson_york_data)\n\nResiduals:\n    Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  \n-0.42396  -0.20650   0.14745   0.05573   0.34804   0.42009  \n\nCoefficients:\n           Estimate  Std. Error\nIntercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n\nGoodness of fit: 1.483\nChisq-statistic: 11.87 on 8 degrees of freedom\np-value: 0.1573\n"
+, fixed=TRUE)
+})
+
+test_that("tidy method works" , {
+  fit = bfsl(pearson_york_data)
+  tmp = tidy(fit)
+  expect_equal(tmp$term[1], "(Intercept)")
+  tmp = tidy(fit, conf.int = TRUE)
+  expect_equal(tmp$conf.high[2], -0.346819737)
+  tmp = tidy(fit, conf.int = TRUE, conf.level = 0.99)
+  expect_equal(tmp$conf.high[2], -0.285971243)
+})
+
+test_that("glance method works" , {
+  fit = bfsl(pearson_york_data)
+  tmp = glance(fit)
+  expect_equal(tmp$p.value, 0.1572672287)
+})
+
+test_that("augment method works" , {
+  fit = bfsl(pearson_york_data)
+  tmp = augment(fit)
+  expect_equivalent(tmp$.resid, fit$residuals)
+  expect_equivalent(tmp$.fitted, fit$fitted.values)
+  newdata = data.frame(x = c(2:7))
+  tmp = augment(fit, newdata = newdata)
+  pred = predict(fit, newdata, se.fit = TRUE)
+  expect_equivalent(tmp$.fitted, pred$fit)
+  expect_equivalent(tmp$.se.fit, pred$se.fit)
+})

@@ -1,3 +1,8 @@
+# bfsl 0.1.2
+
+* Added `summary.bfsl()` method.
+* Added broom tidier methods `tidy()`, `glance()` and `augment()` for bfsl objects.
+
 # bfsl 0.1.1
 
 * Updated README.md.
@@ -7,7 +12,7 @@
 * Added missing "/n" in `print.bfsl()` (#1).
 * Added `predict.bfsl()` method to calculate confidence intervals (#2).
 * Added `bfsl.formula()` method. This allows to plot confidence intervals
-  with `geom_smooth()` of `ggplot2`.
+  with `ggplot2`.
 
 # bfsl 0.1.0
 

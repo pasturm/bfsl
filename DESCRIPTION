@@ -1,7 +1,7 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.1.1
-Date: 2021-04-01
+Version: 0.1.2
+Date: 2021-09-13
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: How to fit a straight line through a set of points with errors in
   both coordinates? The bfsl package provides unbiased estimates of the intercept, 
@@ -17,4 +17,6 @@ BugReports: https://github.com/pasturm/bfsl/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Suggests: testthat
+Suggests: testthat, tibble, dplyr
+Imports: 
+    generics

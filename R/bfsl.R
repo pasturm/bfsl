@@ -308,8 +308,8 @@ print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
                 quote = FALSE, ...)
 
   cat("\nGoodness of fit:\n")
-  cat(format(x$chisq, digits = digits), "\n")
-
+  cat(format(x$chisq, digits = digits))
+  cat("\n")
   invisible(x)
 }
 
@@ -388,12 +388,14 @@ plot.bfsl = function(x, grid = TRUE, ...)
 #'
 #' @export
 predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
-                        level = 0.95, se.fit = FALSE, ...)
-{
+                        level = 0.95, se.fit = FALSE, ...) {
   if (missing(newdata) || is.null(newdata)) {
     newdata = data.frame(x = object$data$x)
   }
-  else if (!("x" %in% colnames(newdata))) {
+  if (!is.vector(newdata) || is.list(newdata)) {
+    newdata = as.data.frame(newdata)
+  }
+  if (!("x" %in% colnames(newdata))) {
     stop('No column with name "x" found in newdata.')
   }
   m = model.frame(terms(~x), newdata)
@@ -408,7 +410,7 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
     var.fit = rowSums((X %*% V) * X)  # point-wise variance for predicted mean
   }
   if (interval=="confidence") {
-    df = object$df.residual  # degree of freedom
+    df = object$df.residual  # degrees of freedom
     tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
     predictor = cbind(predictor, predictor + outer(sqrt(var.fit), tfrac))
     colnames(predictor) = c("fit", "lwr", "upr")
@@ -418,3 +420,197 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
   }
   return(predictor)
 }
+
+
+#' Summary Method for bfsl Results
+#'
+#' \code{summary} method for class \code{"bfsl"}.
+#'
+#' @param object An object of class "\code{bfsl}".
+#' @param digits The number of significant digits to use when printing.
+#' @param ... Further arguments passed to \code{summary.default}.
+#'
+#' @export
+summary.bfsl = function(object, digits = max(3L, getOption("digits") - 3L), ...) {
+
+  z = object
+  ans = z
+
+  ans$p.value = 1 - stats::pchisq(z$chisq * z$df.residual, df = z$df.residual)
+
+  class(ans) = "summary.bfsl"
+  ans
+}
+
+
+#' Print Method for summary.bfsl Objects
+#'
+#' \code{print} method for class \code{"summary.bfsl"}.
+#'
+#' @param x An object of class "\code{summary.bfsl}".
+#' @param digits The number of significant digits to use when printing.
+#' @param ... Further arguments passed to \code{print.default}.
+#'
+#' @export
+print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n",
+      paste(deparse(x$call), sep="\n", collapse = "\n"), "\n\n", sep = "")
+
+  cat("Residuals:\n")
+  if(NROW(x$residuals) > 5L) {
+    print.default(format(summary(x$residuals), digits = digits), print.gap = 2L,
+                  quote = FALSE, ...)
+  } else {
+    print.default(format(x$residuals, digits = digits), print.gap = 2L,
+                  quote = FALSE, ...)
+  }
+
+  cat("\nCoefficients:\n")
+  print.default(format(x$coefficients, digits = digits), print.gap = 2L,
+                quote = FALSE, ...)
+
+  cat("\nGoodness of fit:", format(x$chisq, digits = digits))
+  cat("\nChisq-statistic:", format(x$chisq*x$df.residual, digits = digits),
+      "on", format(x$df.residual, digits = digits),
+      "degrees of freedom")
+  cat("\np-value:", format(x$p.value, digits = digits))
+
+  cat("\n\n")
+  invisible(x)
+}
+
+#' @importFrom generics tidy
+#' @export
+generics::tidy
+
+
+#' @importFrom generics glance
+#' @export
+generics::glance
+
+
+#' @importFrom generics augment
+#' @export
+generics::augment
+
+
+#' Tidy a bfsl Object
+#'
+#' Broom tidier method to \code{tidy} a bfsl object.
+#'
+#' @param x A `bfsl` object.
+#' @param conf.int Logical indicating whether or not to include
+#'   a confidence interval in the tidied output. Defaults to FALSE.
+#' @param conf.level The confidence level to use for the confidence
+#'   interval if conf.int = TRUE. Must be strictly greater than 0
+#'   and less than 1. Defaults to 0.95, which corresponds to a
+#'   95 percent confidence interval.
+#' @param ... Unused, included for generic consistency only.
+#' @return A tidy [tibble::tibble()] summarizing component-level
+#'   information about the model
+#'
+#' @examples
+#' fit = bfsl(pearson_york_data)
+#'
+#' tidy(fit)
+#'
+#' @export
+tidy.bfsl = function(x, conf.int = FALSE, conf.level = 0.95, ...) {
+
+  rownames(x$coefficients) = c("(Intercept)", "Slope")
+  colnames(x$coefficients) = c("estimate", "std.error")
+  result = tibble::as_tibble(x$coefficients, rownames = "term")
+
+  if (conf.int) {
+    df = x$df.residual  # degrees of freedom
+    tfrac = c(-1, 1)*qt((1-conf.level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
+    ci = x$coefficients[,1] + outer(x$coefficients[,2], tfrac)
+    colnames(ci) = c("conf.low", "conf.high")
+    ci = tibble::as_tibble(ci, rownames = "term")
+    result = dplyr::left_join(result, ci, by = "term")
+  }
+
+  result
+}
+
+
+#' Glance at a bfsl Object
+#'
+#' Broom tidier method to \code{glance} at a bfsl object.
+#'
+#' @param x A `bfsl` object.
+#' @param ... Unused, included for generic consistency only.
+#' @return A [tibble::tibble()] with one row and columns:
+#' \item{chisq}{The goodness of fit.}
+#' \item{p.value}{P-value.}
+#' \item{df.residual}{Residual degrees of freedom.}
+#' \item{nobs}{Number of observations.}
+#' \item{isConv}{Did the fit converge?}
+#' \item{iter}{Number of iterations.}
+#' \item{finTol}{Final tolerance.}
+#'
+#' @examples
+#' fit = bfsl(pearson_york_data)
+#'
+#' glance(fit)
+#'
+#' @export
+glance.bfsl = function(x, ...) {
+  with(
+    summary(x),
+    tibble::tibble(
+      chisq = chisq,
+      p.value = 1 - stats::pchisq(chisq * df.residual, df = df.residual),
+      df.residual = df.residual,
+      nobs = length(data$x),
+      isConv = convInfo$isConv,
+      iter = convInfo$finIter,
+      finTol = convInfo$finTol
+    )
+  )
+}
+
+
+#' Augment Data with Information from a bfsl Object
+#'
+#' Broom tidier method to \code{augment} data with information from a bfsl object.
+#'
+#' @param x A `bfsl` object created by [bfsl::bfsl()]
+#' @param data A [base::data.frame()] or [tibble::tibble()] containing all the
+#' original predictors used to create x. Defaults to NULL, indicating that
+#' nothing has been passed to newdata. If newdata is specified, the data argument
+#' will be ignored.
+#' @param newdata A [base::data.frame()] or [tibble::tibble()] containing all
+#' the original predictors used to create x. Defaults to NULL, indicating that
+#' nothing has been passed to newdata. If newdata is specified, the data
+#' argument will be ignored.
+#' @param ... Unused, included for generic consistency only.
+#'
+#' @return A [tibble::tibble()] with columns:
+#' \item{.fitted}{Fitted or predicted value.}
+#' \item{.se.fit}{Standard errors of fitted values.}
+#' \item{.resid}{The residuals, that is \code{y} observations minus fitted
+#' values. (Only returned if \code{newdata = NULL}).}
+#'
+#' @examples
+#' fit = bfsl(pearson_york_data)
+#'
+#' augment(fit)
+#'
+#' @export
+augment.bfsl = function(x, data = x$data, newdata = NULL, ...) {
+  if (is.null(newdata)) {
+    dplyr::bind_cols(tibble::as_tibble(data),
+                     tibble::tibble(.fitted = x$fitted.values,
+                                    .se.fit = predict.bfsl(x,
+                                                      newdata = data,
+                                                      se.fit = TRUE)$se.fit,
+                                    .resid =  x$residuals))
+  } else {
+    predictions = predict.bfsl(x, newdata = newdata, se.fit = TRUE)
+    dplyr::bind_cols(tibble::as_tibble(newdata),
+                     tibble::tibble(.fitted = predictions$fit,
+                                    .se.fit = predictions$se.fit))
+  }
+}
+
