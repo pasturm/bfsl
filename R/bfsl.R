@@ -411,7 +411,7 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
   }
   if (interval=="confidence") {
     df = object$df.residual  # degrees of freedom
-    tfrac = c(-1, 1)*qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
+    tfrac = c(-1, 1)*stats::qt((1-level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
     predictor = cbind(predictor, predictor + outer(sqrt(var.fit), tfrac))
     colnames(predictor) = c("fit", "lwr", "upr")
   }
@@ -523,7 +523,7 @@ tidy.bfsl = function(x, conf.int = FALSE, conf.level = 0.95, ...) {
 
   if (conf.int) {
     df = x$df.residual  # degrees of freedom
-    tfrac = c(-1, 1)*qt((1-conf.level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
+    tfrac = c(-1, 1)*stats::qt((1-conf.level)/2, df, lower.tail = FALSE)  # quantiles of t-distribution
     ci = x$coefficients[,1] + outer(x$coefficients[,2], tfrac)
     colnames(ci) = c("conf.low", "conf.high")
     ci = tibble::as_tibble(ci, rownames = "term")

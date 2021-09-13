@@ -34,24 +34,25 @@ The bfsl package implements York's general solution and provides the best-fit st
 Other commonly used least-squares estimation methods, such as ordinary least-squares regression, orthogonal distance regression (also called major axis regression), geometric mean regression (also called reduced major axis or standardised major axis regression) or Deming regression are all special cases of York’s solution and only valid under particular measurement conditions.
 
 
-## Example
+## Examples
 <!-- # ```{r print} -->
 <!-- # library(bfsl) -->
 <!-- # bfsl(pearson_york_data) -->
 <!-- # ``` -->
-```{r plot, out.width="75%", dpi=300}
+```{r summary, out.width="75%", dpi=300}
 library(bfsl)
 fit = bfsl(pearson_york_data)
-print(fit)
+summary(fit)
+```
 
+```{r plot, out.width="75%", dpi=300}
 plot(fit)
 ols = bfsl(pearson_york_data, sd_x = 0, sd_y = 1)
 abline(coef = ols$coef[,1], lty = 2)
 legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
 ```
-
-Confindence interval:
 ```{r confidence, out.width="75%", dpi=300}
+# with confidence interval
 df = as.data.frame(fit$data)
 newx = seq(min(df$x-df$sd_x), max(df$x+df$sd_x), length.out = 100)
 preds = predict(fit, newdata = data.frame(x=newx), interval = 'confidence')
@@ -74,6 +75,13 @@ ggplot(data = df, aes(x = x, y = y)) +
   geom_smooth(method = bfsl, method.args = list(sd_x = df$sd_x, sd_y = df$sd_y)) +
   geom_errorbar(aes(ymin = y-sd_y, ymax = y+sd_y), width = 0.05) +
   geom_errorbarh(aes(xmin = x-sd_x, xmax = x+sd_x), height = 0.05)
+```
+
+```{r broom tidier, out.width="60%", dpi=300}
+# broom tidier methods
+tidy(fit, conf.int = TRUE)
+glance(fit)
+augment(fit, newdata = data.frame(x = c(2:6)))
 ```
 
 ## Installation
