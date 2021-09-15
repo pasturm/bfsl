@@ -302,13 +302,13 @@ bfsl_fit = function(x, y, sd_x, sd_y, r, control, cl) {
 #' @export
 print.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...)
 {
-  cat("Best-fit straight line\n\n")
+  cat("\nCall:\n",
+      paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
 
+  cat("Coefficients:\n")
   print.default(format(x$coefficients, digits = digits), print.gap = 2L,
                 quote = FALSE, ...)
 
-  cat("\nGoodness of fit:\n")
-  cat(format(x$chisq, digits = digits))
   cat("\n")
   invisible(x)
 }
@@ -427,16 +427,16 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
 #' \code{summary} method for class \code{"bfsl"}.
 #'
 #' @param object An object of class "\code{bfsl}".
-#' @param digits The number of significant digits to use when printing.
 #' @param ... Further arguments passed to \code{summary.default}.
 #'
 #' @export
-summary.bfsl = function(object, digits = max(3L, getOption("digits") - 3L), ...) {
+summary.bfsl = function(object, ...) {
 
   z = object
   ans = z
 
   ans$p.value = 1 - stats::pchisq(z$chisq * z$df.residual, df = z$df.residual)
+  ans$chisqstatistic = z$chisq*z$df.residual
 
   class(ans) = "summary.bfsl"
   ans
@@ -470,7 +470,7 @@ print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...
                 quote = FALSE, ...)
 
   cat("\nGoodness of fit:", format(x$chisq, digits = digits))
-  cat("\nChisq-statistic:", format(x$chisq*x$df.residual, digits = digits),
+  cat("\nChisq-statistic:", format(x$chisqstatistic, digits = digits),
       "on", format(x$df.residual, digits = digits),
       "degrees of freedom")
   cat("\nCovariance of the slope and intercept:", format(x$cov.ab, digits = digits))

@@ -1,7 +1,8 @@
 # bfsl 0.1.2
 
-* Added `summary.bfsl()` method.
+* Added `summary.bfsl()` and `print.summary.bfsl()` methods.
 * Added broom tidier methods `tidy()`, `glance()` and `augment()` for bfsl objects.
+* Updated `print.bfsl()`.
 
 # bfsl 0.1.1
 

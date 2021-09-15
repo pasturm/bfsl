@@ -71,13 +71,13 @@ test_that("bfsl works with data frames, lists, matrices, formulas", {
 
 test_that("print method works", {
   expect_output(print(bfsl(pearson_york_data)),
-"Best-fit straight line
+"
+Call:
+bfsl.default(x = pearson_york_data)
 
-           Estimate  Std. Error
-Intercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n
-Goodness of fit:
-1.483"
-)
+Coefficients:\n           Estimate  Std. Error
+Intercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n"
+, fixed=TRUE)
 })
 
 test_that("plot method does not create an error", {

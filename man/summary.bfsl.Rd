@@ -4,12 +4,10 @@
 \alias{summary.bfsl}
 \title{Summary Method for bfsl Results}
 \usage{
-\method{summary}{bfsl}(object, digits = max(3L, getOption("digits") - 3L), ...)
+\method{summary}{bfsl}(object, ...)
 }
 \arguments{
 \item{object}{An object of class "\code{bfsl}".}
-
-\item{digits}{The number of significant digits to use when printing.}
 
 \item{...}{Further arguments passed to \code{summary.default}.}
 }
