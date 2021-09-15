@@ -64,6 +64,7 @@ summary(fit)
 #> 
 #> Goodness of fit: 1.483
 #> Chisq-statistic: 11.87 on 8 degrees of freedom
+#> Covariance of the slope and intercept: -0.01651
 #> p-value: 0.1573
 ```
 
@@ -71,7 +72,7 @@ summary(fit)
 plot(fit)
 ols = bfsl(pearson_york_data, sd_x = 0, sd_y = 1)
 abline(coef = ols$coef[,1], lty = 2)
-legend("topright", c("ordinary least squares", "best-fit straight line"), lty = c(2,1))
+legend("topright", c("best-fit straight line", "ordinary least squares"), lty = c(1,2))
 ```
 
 <img src="man/figures/README-plot-1.png" width="75%" />

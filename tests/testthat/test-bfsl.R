@@ -101,7 +101,15 @@ test_that("summary method works", {
   s = summary(fit)
   expect_equal(s$p.value, 0.1572672287)
   expect_output(print(summary(fit)),
-"Call:\nbfsl.default(x = pearson_york_data)\n\nResiduals:\n    Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  \n-0.42396  -0.20650   0.14745   0.05573   0.34804   0.42009  \n\nCoefficients:\n           Estimate  Std. Error\nIntercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n\nGoodness of fit: 1.483\nChisq-statistic: 11.87 on 8 degrees of freedom\np-value: 0.1573\n"
+"Call:
+bfsl.default(x = pearson_york_data)\n
+Residuals:\n    Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  \n-0.42396  -0.20650   0.14745   0.05573   0.34804   0.42009  \n
+Coefficients:\n           Estimate  Std. Error\nIntercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n
+Goodness of fit: 1.483
+Chisq-statistic: 11.87 on 8 degrees of freedom
+Covariance of the slope and intercept: -0.01651
+p-value: 0.1573
+"
 , fixed=TRUE)
 })
 
@@ -113,6 +121,14 @@ test_that("tidy method works" , {
   expect_equal(tmp$conf.high[2], -0.346819737)
   tmp = tidy(fit, conf.int = TRUE, conf.level = 0.99)
   expect_equal(tmp$conf.high[2], -0.285971243)
+  tmp = bfsl(pearson_york_data$x, pearson_york_data$y, sd_x = 0, sd_y = 1)
+  fit = bfsl(pearson_york_data$x, pearson_york_data$y, sd_x = 0, sd_y = sqrt(tmp$chisq))
+  tmp = tidy(fit, conf.int = TRUE)
+  ols = lm(y ~ x, pearson_york_data)
+  conf.low.ols = confint(ols)[,1]
+  names(conf.low.ols) = NULL
+  conf.low.bfsl = tmp$conf.low
+  expect_equal(conf.low.bfsl, conf.low.ols)
 })
 
 test_that("glance method works" , {

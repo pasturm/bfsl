@@ -473,6 +473,7 @@ print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...
   cat("\nChisq-statistic:", format(x$chisq*x$df.residual, digits = digits),
       "on", format(x$df.residual, digits = digits),
       "degrees of freedom")
+  cat("\nCovariance of the slope and intercept:", format(x$cov.ab, digits = digits))
   cat("\np-value:", format(x$p.value, digits = digits))
 
   cat("\n\n")
