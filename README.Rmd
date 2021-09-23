@@ -112,6 +112,6 @@ standard errors of the best straight line, _American Journal of Physics_, 72, 36
 
 <a name="cantrell08"></a>Cantrell, C. A. (2008). Technical Note: Review of methods 
 for linear least-squares fitting of data and application to atmospheric chemistry problems,
-_Atmospheric Chemistry and Physics_, 8, 5477-5487, https://www.atmos-chem-phys.net/8/5477/2008/
+_Atmospheric Chemistry and Physics_, 8, 5477-5487, https://acp.copernicus.org/articles/8/5477/2008/
 
 <a name="wehr17"></a>Wehr, R. and Saleska, S. R. (2017). The long-solved problem of the best-fit straight line: application to isotopic mixing lines, _Biogeosciences_, 14, 17-29, https://doi.org/10.5194/bg-14-17-2017

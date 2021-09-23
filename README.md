@@ -173,7 +173,7 @@ slope, intercept, and standard errors of the best straight line,
 <a name="cantrell08"></a>Cantrell, C. A. (2008). Technical Note: Review
 of methods for linear least-squares fitting of data and application to
 atmospheric chemistry problems, *Atmospheric Chemistry and Physics*, 8,
-5477-5487, <https://www.atmos-chem-phys.net/8/5477/2008/>
+5477-5487, <https://acp.copernicus.org/articles/8/5477/2008/>
 
 <a name="wehr17"></a>Wehr, R. and Saleska, S. R. (2017). The long-solved
 problem of the best-fit straight line: application to isotopic mixing
