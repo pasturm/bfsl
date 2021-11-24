@@ -1,0 +1,55 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.1.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "bfsl" in publications use:'
+type: software
+license: MIT
+title: 'bfsl: Best-Fit Straight Line'
+version: 0.2.0
+abstract: How to fit a straight line through a set of points with errors in both coordinates?
+  The 'bfsl' package implements the York regression (York, 2004 <doi:10.1119/1.1632486>).
+  It provides unbiased estimates of the intercept, slope and standard errors for the
+  best-fit straight line to independent points with (possibly correlated) normally
+  distributed errors in both x and y. Other commonly used errors-in-variables methods,
+  such as orthogonal distance regression, geometric mean regression or Deming regression
+  are special cases of the 'bfsl' solution.
+authors:
+- family-names: Sturm
+  given-names: Patrick
+  email: sturm@tofwerk.com
+preferred-citation:
+  type: manual
+  title: 'bfsl: Best-Fit Straight Line'
+  authors:
+  - family-names: Sturm
+    given-names: Patrick
+    email: sturm@tofwerk.com
+  version: 0.2.0
+  abstract: How to fit a straight line through a set of points with errors in both
+    coordinates? The 'bfsl' package implements the York regression (York, 2004 <doi:10.1119/1.1632486>).
+    It provides unbiased estimates of the intercept, slope and standard errors for
+    the best-fit straight line to independent points with (possibly correlated) normally
+    distributed errors in both x and y. Other commonly used errors-in-variables methods,
+    such as orthogonal distance regression, geometric mean regression or Deming regression
+    are special cases of the 'bfsl' solution.
+  repository: https://CRAN.R-project.org/package=bfsl
+  repository-code: https://github.com/pasturm/bfsl
+  url: https://github.com/pasturm/bfsl
+  date-released: '2021-09-23'
+  contact:
+  - family-names: Sturm
+    given-names: Patrick
+    email: sturm@tofwerk.com
+  license: MIT
+  year: '2021'
+repository: https://CRAN.R-project.org/package=bfsl
+repository-code: https://github.com/pasturm/bfsl
+url: https://github.com/pasturm/bfsl
+date-released: '2021-09-23'
+contact:
+- family-names: Sturm
+  given-names: Patrick
+  email: sturm@tofwerk.com
