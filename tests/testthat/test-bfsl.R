@@ -99,16 +99,15 @@ test_that("predict method works", {
 test_that("summary method works", {
   fit = bfsl(pearson_york_data)
   s = summary(fit)
-  expect_equal(s$p.value, 0.1572672287)
   expect_output(print(summary(fit)),
-"Call:
+"
+Call:
 bfsl.default(x = pearson_york_data)\n
 Residuals:\n    Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  \n-0.42396  -0.20650   0.14745   0.05573   0.34804   0.42009  \n
 Coefficients:\n           Estimate  Std. Error\nIntercept   5.47991   0.29497  \nSlope      -0.48053   0.05799  \n
 Goodness of fit: 1.483
 Chisq-statistic: 11.87 on 8 degrees of freedom
 Covariance of the slope and intercept: -0.01651
-p-value: 0.1573
 "
 , fixed=TRUE)
 })
@@ -134,7 +133,7 @@ test_that("tidy method works" , {
 test_that("glance method works" , {
   fit = bfsl(pearson_york_data)
   tmp = glance(fit)
-  expect_equal(tmp$p.value, 0.1572672287)
+  expect_equal(tmp$chisq, 1.483294149232)
 })
 
 test_that("augment method works" , {

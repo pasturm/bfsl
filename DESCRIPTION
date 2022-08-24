@@ -1,7 +1,7 @@
 Package: bfsl
 Title: Best-Fit Straight Line
-Version: 0.2.0
-Date: 2021-09-23
+Version: 0.2.1
+Date: 2022-08-24
 Authors@R: person("Patrick", "Sturm", email = "sturm@tofwerk.com", role = c("aut", "cre"))
 Description: How to fit a straight line through a set of points with errors in
   both coordinates? The 'bfsl' package implements the York regression 

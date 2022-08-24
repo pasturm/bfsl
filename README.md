@@ -65,7 +65,6 @@ summary(fit)
 #> Goodness of fit: 1.483
 #> Chisq-statistic: 11.87 on 8 degrees of freedom
 #> Covariance of the slope and intercept: -0.01651
-#> p-value: 0.1573
 ```
 
 ``` r
@@ -118,10 +117,10 @@ tidy(fit, conf.int = TRUE)
 #> 1 (Intercept)    5.48     0.295     4.80      6.16 
 #> 2 Slope         -0.481    0.0580   -0.614    -0.347
 glance(fit)
-#> # A tibble: 1 x 7
-#>   chisq p.value df.residual  nobs isConv  iter   finTol
-#>   <dbl>   <dbl>       <dbl> <int> <lgl>  <dbl>    <dbl>
-#> 1  1.48   0.157           8    10 TRUE       7 2.01e-11
+#> # A tibble: 1 x 6
+#>   chisq df.residual  nobs isConv  iter   finTol
+#>   <dbl>       <dbl> <int> <lgl>  <dbl>    <dbl>
+#> 1  1.48           8    10 TRUE       7 2.01e-11
 augment(fit, newdata = data.frame(x = c(2:6)))
 #> # A tibble: 5 x 3
 #>       x .fitted .se.fit

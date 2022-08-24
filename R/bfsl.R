@@ -432,12 +432,7 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
 #' @export
 summary.bfsl = function(object, ...) {
 
-  z = object
-  ans = z
-
-  ans$p.value = 1 - stats::pchisq(z$chisq * z$df.residual, df = z$df.residual)
-  ans$chisqstatistic = z$chisq*z$df.residual
-
+  ans = object
   class(ans) = "summary.bfsl"
   ans
 }
@@ -470,11 +465,10 @@ print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...
                 quote = FALSE, ...)
 
   cat("\nGoodness of fit:", format(x$chisq, digits = digits))
-  cat("\nChisq-statistic:", format(x$chisqstatistic, digits = digits),
+  cat("\nChisq-statistic:", format(x$chisq*x$df.residual, digits = digits),
       "on", format(x$df.residual, digits = digits),
       "degrees of freedom")
   cat("\nCovariance of the slope and intercept:", format(x$cov.ab, digits = digits))
-  cat("\np-value:", format(x$p.value, digits = digits))
 
   cat("\n\n")
   invisible(x)
@@ -561,7 +555,6 @@ glance.bfsl = function(x, ...) {
     summary(x),
     tibble::tibble(
       chisq = chisq,
-      p.value = 1 - stats::pchisq(chisq * df.residual, df = df.residual),
       df.residual = df.residual,
       nobs = length(data$x),
       isConv = convInfo$isConv,
