@@ -1,7 +1,8 @@
 # bfsl 0.2.1
 
-* Removed inappropriate p.value of chi-square statistics in `summary.bfsl()` and
-  `glance.bfsl()`.
+* Removed p-value of chi-square statistic in `summary.bfsl()` and `glance.bfsl()`.
+* Added t-statistic and corresponding p-value of the fitted coefficients in
+  `summary.bfsl()`.
 
 # bfsl 0.2.0
 

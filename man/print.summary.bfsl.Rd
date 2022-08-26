@@ -4,12 +4,21 @@
 \alias{print.summary.bfsl}
 \title{Print Method for summary.bfsl Objects}
 \usage{
-\method{print}{summary.bfsl}(x, digits = max(3L, getOption("digits") - 3L), ...)
+\method{print}{summary.bfsl}(
+  x,
+  digits = max(3L, getOption("digits") - 3L),
+  signif.stars = getOption("show.signif.stars"),
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class "\code{summary.bfsl}".}
 
 \item{digits}{The number of significant digits to use when printing.}
+
+\item{signif.stars}{Logical; if \code{TRUE}, p-values are additionally
+encoded visually as 'significance stars'. It defaults to the
+\code{show.signif.stars} slot of \code{options}.}
 
 \item{...}{Further arguments passed to \code{print.default}.}
 }

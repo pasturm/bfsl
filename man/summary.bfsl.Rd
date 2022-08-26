@@ -11,6 +11,23 @@
 
 \item{...}{Further arguments passed to \code{summary.default}.}
 }
+\value{
+An object of class "\code{bfsl}", which is a \code{list} containing
+the following components:
+\item{coefficients}{A \code{2x4} matrix with columns of the fitted coefficients
+(intercept and slope), their standard error, t-statistic and corresponding
+(two-sided) p-value.}
+\item{chisq}{The goodness of fit (see \code{\link[bfsl]{bfsl}}).}
+\item{fitted.values}{The fitted mean values.}
+\item{residuals}{The residuals, that is \code{y} observations minus fitted values.}
+\item{df.residual}{The residual degrees of freedom.}
+\item{cov.ab}{The covariance of the slope and intercept.}
+\item{control}{The control \code{list} used, see the \code{control} argument.}
+\item{convInfo}{A \code{list} with convergence information.}
+\item{call}{The matched call.}
+\item{data}{A \code{list} containing \code{x}, \code{y}, \code{sd_x}, \code{sd_y}
+and \code{r}.}
+}
 \description{
 \code{summary} method for class \code{"bfsl"}.
 }

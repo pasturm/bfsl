@@ -270,7 +270,7 @@ bfsl_fit = function(x, y, sd_x, sd_y, r, control, cl) {
 
   # fitted coefficients including standard errors
   coef = c(a, b)
-  names(coef) = c("Intercept", "Slope")
+  names(coef) = c("(Intercept)", "Slope")
   sterr = c(sd_a, sd_b)
   coefficients = cbind(coef, sterr)
   dimnames(coefficients) = list(names(coef), c("Estimate", "Std. Error"))
@@ -429,10 +429,36 @@ predict.bfsl = function(object, newdata, interval = c("none", "confidence"),
 #' @param object An object of class "\code{bfsl}".
 #' @param ... Further arguments passed to \code{summary.default}.
 #'
+#' @return An object of class "\code{bfsl}", which is a \code{list} containing
+#' the following components:
+#' \item{coefficients}{A \code{2x4} matrix with columns of the fitted coefficients
+#' (intercept and slope), their standard error, t-statistic and corresponding
+#' (two-sided) p-value.}
+#' \item{chisq}{The goodness of fit (see \code{\link[bfsl]{bfsl}}).}
+#' \item{fitted.values}{The fitted mean values.}
+#' \item{residuals}{The residuals, that is \code{y} observations minus fitted values.}
+#' \item{df.residual}{The residual degrees of freedom.}
+#' \item{cov.ab}{The covariance of the slope and intercept.}
+#' \item{control}{The control \code{list} used, see the \code{control} argument.}
+#' \item{convInfo}{A \code{list} with convergence information.}
+#' \item{call}{The matched call.}
+#' \item{data}{A \code{list} containing \code{x}, \code{y}, \code{sd_x}, \code{sd_y}
+#' and \code{r}.}
+#'
 #' @export
 summary.bfsl = function(object, ...) {
 
-  ans = object
+  z = object
+  ans = z
+  t.value.slope = z$coefficients[2,1]/z$coefficients[2,2]
+  t.value.intercept = z$coefficients[1,1]/z$coefficients[1,2]
+  p.value.slope = 2*stats::pt(abs(t.value.slope), df = z$df.residual,
+                              lower.tail = FALSE)
+  p.value.intercept = 2*stats::pt(abs(t.value.intercept), df = z$df.residual,
+                                  lower.tail = FALSE)
+  ans$coefficients = cbind(z$coefficients, c(t.value.intercept, t.value.slope),
+                           c(p.value.intercept, p.value.slope))
+  dimnames(ans$coefficients)[2] = list(c(unlist(dimnames(z$coefficients)[2]), "t value", "Pr(>|t|)"))
   class(ans) = "summary.bfsl"
   ans
 }
@@ -444,10 +470,14 @@ summary.bfsl = function(object, ...) {
 #'
 #' @param x An object of class "\code{summary.bfsl}".
 #' @param digits The number of significant digits to use when printing.
+#' @param signif.stars 	Logical; if \code{TRUE}, p-values are additionally
+#' encoded visually as 'significance stars'. It defaults to the
+#' \code{show.signif.stars} slot of \code{options}.
 #' @param ... Further arguments passed to \code{print.default}.
 #'
 #' @export
-print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L),
+                              signif.stars = getOption("show.signif.stars"), ...) {
   cat("\nCall:\n",
       paste(deparse(x$call), sep="\n", collapse = "\n"), "\n\n", sep = "")
 
@@ -461,8 +491,8 @@ print.summary.bfsl = function(x, digits = max(3L, getOption("digits") - 3L), ...
   }
 
   cat("\nCoefficients:\n")
-  print.default(format(x$coefficients, digits = digits), print.gap = 2L,
-                quote = FALSE, ...)
+  stats::printCoefmat(x$coefficients, digits = digits, signif.stars = signif.stars,
+               na.print = "NA", ...)
 
   cat("\nGoodness of fit:", format(x$chisq, digits = digits))
   cat("\nChisq-statistic:", format(x$chisq*x$df.residual, digits = digits),
@@ -512,9 +542,8 @@ generics::augment
 #' @export
 tidy.bfsl = function(x, conf.int = FALSE, conf.level = 0.95, ...) {
 
-  rownames(x$coefficients) = c("(Intercept)", "Slope")
-  colnames(x$coefficients) = c("estimate", "std.error")
-  result = tibble::as_tibble(x$coefficients, rownames = "term")
+  result = tibble::as_tibble(summary(x)$coefficients, rownames = "term")
+  colnames(result) = c("term", "estimate", "std.error", "statistic", "p.value")
 
   if (conf.int) {
     df = x$df.residual  # degrees of freedom
@@ -536,8 +565,7 @@ tidy.bfsl = function(x, conf.int = FALSE, conf.level = 0.95, ...) {
 #' @param x A `bfsl` object.
 #' @param ... Unused, included for generic consistency only.
 #' @return A [tibble::tibble()] with one row and columns:
-#' \item{chisq}{The goodness of fit.}
-#' \item{p.value}{P-value.}
+#' \item{chisq}{The goodness of fit (see \code{\link[bfsl]{bfsl}}).}
 #' \item{df.residual}{Residual degrees of freedom.}
 #' \item{nobs}{Number of observations.}
 #' \item{isConv}{Did the fit converge?}

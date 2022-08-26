@@ -13,8 +13,7 @@
 }
 \value{
 A [tibble::tibble()] with one row and columns:
-\item{chisq}{The goodness of fit.}
-\item{p.value}{P-value.}
+\item{chisq}{The goodness of fit (see \code{\link[bfsl]{bfsl}}).}
 \item{df.residual}{Residual degrees of freedom.}
 \item{nobs}{Number of observations.}
 \item{isConv}{Did the fit converge?}

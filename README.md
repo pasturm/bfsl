@@ -58,9 +58,11 @@ summary(fit)
 #> -0.42396  -0.20650   0.14745   0.05573   0.34804   0.42009  
 #> 
 #> Coefficients:
-#>            Estimate  Std. Error
-#> Intercept   5.47991   0.29497  
-#> Slope      -0.48053   0.05799  
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept)  5.47991    0.29497  18.578 7.27e-08 ***
+#> Slope       -0.48053    0.05799  -8.287 3.38e-05 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> Goodness of fit: 1.483
 #> Chisq-statistic: 11.87 on 8 degrees of freedom
@@ -111,11 +113,11 @@ ggplot(data = df, aes(x = x, y = y)) +
 ``` r
 # broom tidier methods
 tidy(fit, conf.int = TRUE)
-#> # A tibble: 2 x 5
-#>   term        estimate std.error conf.low conf.high
-#>   <chr>          <dbl>     <dbl>    <dbl>     <dbl>
-#> 1 (Intercept)    5.48     0.295     4.80      6.16 
-#> 2 Slope         -0.481    0.0580   -0.614    -0.347
+#> # A tibble: 2 x 7
+#>   term        estimate std.error statistic      p.value conf.low conf.high
+#>   <chr>          <dbl>     <dbl>     <dbl>        <dbl>    <dbl>     <dbl>
+#> 1 (Intercept)    5.48     0.295      18.6  0.0000000727    4.80      6.16 
+#> 2 Slope         -0.481    0.0580     -8.29 0.0000338      -0.614    -0.347
 glance(fit)
 #> # A tibble: 1 x 6
 #>   chisq df.residual  nobs isConv  iter   finTol
